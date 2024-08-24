@@ -10,6 +10,7 @@
   "license": "MIT",
   "author": "Vedant Chainani <vedantchainani1084@gmail.com>",
   "scripts": {
+    "clean": "hardhat clean",
     "compile": "hardhat compile",
     "coverage": "hardhat coverage",
     "deploy": "hardhat deploy",
@@ -17,6 +18,8 @@
     "format:write": "prettier --write .",
     "lint:check": "eslint .",
     "lint:fix": "eslint --fix .",
+    "local-fhenix:start": "hardhat localfhenix:start",
+    "local-fhenix:stop": "hardhat localfhenix:stop",
     "node": "hardhat node",
     "sol:format:check": "prettier --check --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "sol:format:write": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
@@ -24,9 +27,12 @@
     "test": "hardhat test --typecheck"
   },
   "dependencies": {
+    "@fhenixprotocol/contracts": "^0.2.1",
+    "@openzeppelin/contracts": "^5.0.2",
     "dotenv": "^16.4.5",
     "fhenix-hardhat-docker": "^0.2.2",
-    "fhenix-hardhat-plugin": "^0.2.1"
+    "fhenix-hardhat-plugin": "^0.2.1",
+    "fhenixjs": "0.4.0-alpha.0"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.7",

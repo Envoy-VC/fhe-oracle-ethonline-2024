@@ -15,7 +15,7 @@ const MNEMONIC = process.env.MNEMONIC ?? 'your mnemonic';
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
-  defaultNetwork: 'hardhat',
+  defaultNetwork: 'localfhenix',
   solidity: '0.8.24',
   networks: {
     fhenixHelium: {
