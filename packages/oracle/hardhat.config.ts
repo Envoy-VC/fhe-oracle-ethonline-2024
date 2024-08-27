@@ -7,6 +7,8 @@ import 'fhenix-hardhat-plugin';
 import 'fhenix-hardhat-docker';
 import 'solidity-coverage';
 import '@nomiclabs/hardhat-solhint';
+import 'solidity-docgen';
+
 import * as dotenv from 'dotenv';
 
 dotenv.config({ path: '.env.local' });
@@ -23,6 +25,13 @@ const config: HardhatUserConfig = {
       chainId: 8008135,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : { mnemonic: MNEMONIC },
     },
+  },
+  docgen: {
+    outputDir: 'docs',
+    pages: 'files',
+  },
+  paths: {
+    sources: 'src',
   },
 };
 
