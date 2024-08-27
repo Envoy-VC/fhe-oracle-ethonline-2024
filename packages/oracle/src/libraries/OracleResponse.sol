@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 /// @title Library of types that are used for fulfillment of a Oracle request
-library FunctionsResponse {
+library OracleResponse {
     // Used to send request information from the Router to the Coordinator
     struct RequestMeta {
         // CBOR encoded FHE Oracle request data, use OracleRequest library to encode a request.
