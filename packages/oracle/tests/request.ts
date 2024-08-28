@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { deploy, type FHEOracleState } from '../lib';
+import { createFheInstance, deploy, type FHEOracleState } from '../lib';
 import { before } from 'mocha';
 import type { EventLog } from 'ethers';
 import { Signature, ethers, TypedDataEncoder } from 'ethers';
+import hre from 'hardhat';
 
 describe('Oracle Requests', () => {
   let state: FHEOracleState;
@@ -62,7 +63,7 @@ describe('Oracle Requests', () => {
     expect(event.requestingContract).to.equal(await consumer.getAddress());
   });
   it('should fullfill request', async () => {
-    const { owner, coordinator, consumer } = state;
+    const { owner, coordinator, consumer, otherAccount } = state;
 
     const event = (
       await coordinator.queryFilter(coordinator.filters.Request, -1)
@@ -84,20 +85,23 @@ describe('Oracle Requests', () => {
       ]
     );
 
-    console.log('Commitment', commitment);
+    console.log('Request Id: ', event.commitment.requestId);
+
+    const fheOther = await createFheInstance(
+      hre,
+      await consumer.getAddress(),
+      otherAccount
+    );
+
+    // const encryptedData = (await fheOwner.instance.encrypt_uint32(23)).data;
+    // const encryptedResult = `0x${Buffer.from(encryptedData).toString('hex')}`;
+    const encryptedResult = `0x22`;
 
     const signers = [owner.address];
 
     const report = ethers.AbiCoder.defaultAbiCoder().encode(
       ['bytes32[]', 'bytes[]', 'bytes[]', 'bytes[]'],
-      [
-        [requestId],
-        // [ethers.zeroPadValue('0x01', 32)],
-        // [ethers.zeroPadValue('0x00', 32)],
-        ['0x01'],
-        ['0x00'],
-        [commitment],
-      ]
+      [[requestId], [encryptedResult], ['0x00'], [commitment]]
     );
 
     const domain = {
@@ -118,7 +122,7 @@ describe('Oracle Requests', () => {
 
     const message = {
       requestIds: [requestId],
-      results: ['0x01'],
+      results: [encryptedResult],
       errors: ['0x00'],
       onchainMetadata: [commitment],
     };
@@ -127,14 +131,9 @@ describe('Oracle Requests', () => {
 
     const { v, r, s } = Signature.from(sig);
 
-    const tx = await coordinator.transmit(
-      signers,
-      report,
-      reportHash,
-      [r],
-      [s],
-      [v]
-    );
+    const tx = await coordinator
+      .connect(owner)
+      .transmit(signers, report, reportHash, [r], [s], [v]);
 
     await tx.wait();
 
@@ -147,5 +146,15 @@ describe('Oracle Requests', () => {
       response: consumerEvent?.response,
       error: consumerEvent?.err,
     });
+
+    const sealedValue = await consumer
+      .connect(otherAccount)
+      .getLastResponse(fheOther.permission);
+
+    const unsealed = fheOther.instance.unseal(
+      await consumer.getAddress(),
+      sealedValue
+    );
+    console.log('Decrypted Value', unsealed);
   });
 });

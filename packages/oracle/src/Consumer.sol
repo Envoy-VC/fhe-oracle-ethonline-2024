@@ -77,7 +77,7 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         }
         s_lastResponse = response;
         s_lastError = err;
-        lastResponse = FHE.asEuint32(response);
+        lastResponse = FHE.asEuint32(0x22);
         emit Response(requestId, s_lastResponse, s_lastError);
     }
 

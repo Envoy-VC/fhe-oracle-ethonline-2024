@@ -1,5 +1,4 @@
 import hre from 'hardhat';
-// import { createFheInstance } from './create-instance';
 import { getTokensFromFaucet } from './get-tokens';
 import type {
   OracleCoordinator,
@@ -16,7 +15,6 @@ export interface FHEOracleState {
   consumer: ConsumerExample;
   owner: HardhatEthersSigner;
   otherAccount: HardhatEthersSigner;
-  //   instance: Awaited<ReturnType<typeof createFheInstance>>;
 }
 
 export const deploy = async (): Promise<FHEOracleState> => {
@@ -60,16 +58,11 @@ export const deploy = async (): Promise<FHEOracleState> => {
   const tx = await coordinator.addOracle(owner.address);
   await tx.wait();
 
-  //   const consumerAddress = await consumer.getAddress();
-
-  //   const instance = await createFheInstance(hre, consumerAddress);
-
   return {
     coordinator,
     router,
     owner,
     otherAccount,
     consumer,
-    // instance,
   };
 };
