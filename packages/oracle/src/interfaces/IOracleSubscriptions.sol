@@ -56,6 +56,12 @@ interface IOracleSubscriptions {
     /// @dev notably can be called even if there are pending requests, outstanding ones may fail onchain
     function ownerCancelSubscription(uint64 subscriptionId) external;
 
+    /// @notice Transfer ownership of a subscription to a new address.
+    /// @param subscriptionId - ID of the subscription
+    /// @param newOwner - Address of the new owner
+    /// @dev Only callable by the Subscription's owner
+    function transferSubscriptionOwnership(uint64 subscriptionId, address newOwner) external;
+
     /// @notice Create a new subscription.
     /// @return subscriptionId - A unique subscription id.
     /// @dev You can manage the consumer set dynamically with addConsumer/removeConsumer.

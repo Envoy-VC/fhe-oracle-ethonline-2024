@@ -12,4 +12,8 @@ interface IOracleCoordinator {
     function startRequest(OracleResponse.RequestMeta calldata request)
         external
         returns (OracleResponse.Commitment memory commitment);
+
+    /// @notice Remove a request commitment that the Router has determined to be stale
+    /// @param requestId - The request ID to remove
+    function deleteCommitment(bytes32 requestId) external;
 }

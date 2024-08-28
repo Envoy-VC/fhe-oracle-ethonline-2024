@@ -16,6 +16,8 @@ contract OracleCoordinator is IOracleCoordinator, ITypeAndVersion, Routable, Con
     using OracleResponse for OracleResponse.Commitment;
     using OracleResponse for OracleResponse.FulfillResult;
 
+    event CommitmentDeleted(bytes32 requestId);
+
     /// @inheritdoc ITypeAndVersion
     string public constant override typeAndVersion = "FHE Oracle Coordinator v0.0.1";
 
@@ -128,6 +130,19 @@ contract OracleCoordinator is IOracleCoordinator, ITypeAndVersion, Routable, Con
     /// @dev Validates ownership of the contract
     function _onlyOwner() internal view {
         _validateOwnership();
+    }
+
+    // ================================================================
+    // |                       Request Timeout                        |
+    // ================================================================
+
+    /// @inheritdoc IOracleCoordinator
+    /// @dev Only callable by the Router
+    /// @dev Used by FunctionsRouter.sol during timeout of a request
+    function deleteCommitment(bytes32 requestId) external override onlyRouter {
+        // Delete commitment
+        delete s_requestCommitments[requestId];
+        emit CommitmentDeleted(requestId);
     }
 
     /// @dev Gets the owner of the contract
