@@ -5,6 +5,8 @@ import type { EventLog } from 'ethers';
 
 describe('Oracle Requests', () => {
   let state: FHEOracleState;
+  let subscriptionId: string;
+  let requestId: string;
   before(async () => {
     state = await deploy();
   });
@@ -30,7 +32,8 @@ describe('Oracle Requests', () => {
   };
   it('should send request to oracle', async () => {
     const { router, consumer, otherAccount } = state;
-    const { subscriptionId } = await createSubscription();
+    const { subscriptionId: _subscriptionId } = await createSubscription();
+    subscriptionId = _subscriptionId;
 
     const res = await consumer
       .connect(otherAccount)
@@ -46,6 +49,20 @@ describe('Oracle Requests', () => {
       await router.queryFilter(router.filters.RequestStart, -1)
     ).at(0)?.args;
 
-    expect(event?.requestId).to.not.be.undefined;
+    if (!event?.requestId) {
+      throw new Error('Request Id not found');
+    }
+
+    requestId = event.requestId;
+
+    expect(event.subscriptionId).to.equal(subscriptionId);
+    expect(event.data).to.not.be.undefined;
+    expect(event.subscriptionOwner).to.equal(otherAccount.address);
+    expect(event.requestingContract).to.equal(await consumer.getAddress());
+  });
+  it('should fullfill request', async () => {
+    const { router, consumer, otherAccount, coordinator } = state;
+    
+    router.fulfill
   });
 });
