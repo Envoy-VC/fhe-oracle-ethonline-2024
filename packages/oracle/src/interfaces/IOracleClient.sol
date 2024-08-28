@@ -2,7 +2,7 @@
 pragma solidity ^0.8.19;
 
 /// @title FHE Oracle client interface.
-interface IFunctionsClient {
+interface IOracleClient {
     /// @notice Oracle response handler called by the Oracle Router
     /// @param requestId The requestId returned by FunctionsClient.sendRequest().
     /// @param response Aggregated response from the request's source code.

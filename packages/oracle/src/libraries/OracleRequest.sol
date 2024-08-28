@@ -98,7 +98,6 @@ library OracleRequest {
     /// @param args The array of string args (must not be empty)
     function _setArgs(Request memory self, Argument[] memory args) internal pure {
         if (args.length == 0) revert EmptyArgs();
-
         self.args = args;
     }
 }
