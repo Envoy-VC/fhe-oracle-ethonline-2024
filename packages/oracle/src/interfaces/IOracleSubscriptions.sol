@@ -87,8 +87,7 @@ interface IOracleSubscriptions {
     /// @notice Cancel a subscription
     /// @dev Only callable by the Subscription's owner
     /// @param subscriptionId - ID of the subscription
-    /// @param to - Where to send the remaining LINK to
-    function cancelSubscription(uint64 subscriptionId, address to) external;
+    function cancelSubscription(uint64 subscriptionId) external;
 
     /// @notice Check to see if there exists a request commitment for all consumers for a given subscription.
     /// @param subscriptionId - ID of the subscription

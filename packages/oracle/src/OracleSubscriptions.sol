@@ -20,7 +20,7 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
     // ================================================================
     // Keep a count of the number of subscriptions so that its possible to
     // loop through all the current subscriptions via .getSubscription().
-    uint64 private s_currentSubscriptionId;
+    uint64 public s_currentSubscriptionId;
 
     mapping(uint64 subscriptionId => Subscription) private s_subscriptions;
 
@@ -30,7 +30,7 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
     event SubscriptionCreated(uint64 indexed subscriptionId, address owner);
     event SubscriptionConsumerAdded(uint64 indexed subscriptionId, address consumer);
     event SubscriptionConsumerRemoved(uint64 indexed subscriptionId, address consumer);
-    event SubscriptionCanceled(uint64 indexed subscriptionId, address fundsRecipient);
+    event SubscriptionCanceled(uint64 indexed subscriptionId);
     event SubscriptionOwnerTransferred(uint64 indexed subscriptionId, address from, address to);
 
     event RequestTimedOut(bytes32 indexed requestId);
@@ -66,7 +66,7 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
     function ownerCancelSubscription(uint64 subscriptionId) external override {
         _onlyRouterOwner();
         _isExistingSubscription(subscriptionId);
-        _cancelSubscriptionHelper(subscriptionId, s_subscriptions[subscriptionId].owner);
+        _cancelSubscriptionHelper(subscriptionId);
     }
 
     // ================================================================
@@ -216,7 +216,7 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
         emit SubscriptionConsumerAdded(subscriptionId, consumer);
     }
 
-    function _cancelSubscriptionHelper(uint64 subscriptionId, address toAddress) private {
+    function _cancelSubscriptionHelper(uint64 subscriptionId) private {
         Subscription memory subscription = s_subscriptions[subscriptionId];
         uint64 completedRequests = 0;
 
@@ -229,11 +229,11 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
         }
         delete s_subscriptions[subscriptionId];
 
-        emit SubscriptionCanceled(subscriptionId, toAddress);
+        emit SubscriptionCanceled(subscriptionId);
     }
 
     /// @inheritdoc IOracleSubscriptions
-    function cancelSubscription(uint64 subscriptionId, address to) external override {
+    function cancelSubscription(uint64 subscriptionId) external override {
         _whenNotPaused();
         _onlySubscriptionOwner(subscriptionId);
 
@@ -241,7 +241,7 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
             revert CannotRemoveWithPendingRequests();
         }
 
-        _cancelSubscriptionHelper(subscriptionId, to);
+        _cancelSubscriptionHelper(subscriptionId);
     }
 
     /// @inheritdoc IOracleSubscriptions

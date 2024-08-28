@@ -107,6 +107,15 @@ contract OracleCoordinator is IOracleCoordinator, ITypeAndVersion, Routable, Con
             )
         );
 
+        commitment = OracleResponse.Commitment({
+            requestId: requestId,
+            coordinator: address(this),
+            client: request.requestingContract,
+            subscriptionId: request.subscriptionId,
+            callbackGasLimit: request.callbackGasLimit,
+            timeoutTimestamp: timeoutTimestamp
+        });
+
         s_requestCommitments[requestId] = keccak256(abi.encode(commitment));
 
         emit Request(
@@ -118,14 +127,7 @@ contract OracleCoordinator is IOracleCoordinator, ITypeAndVersion, Routable, Con
             request.subscriptionOwner,
             request.data,
             request.callbackGasLimit,
-            OracleResponse.Commitment({
-                requestId: commitment.requestId,
-                coordinator: commitment.coordinator,
-                client: commitment.client,
-                subscriptionId: commitment.subscriptionId,
-                callbackGasLimit: commitment.callbackGasLimit,
-                timeoutTimestamp: commitment.timeoutTimestamp
-            })
+            commitment
         );
 
         return commitment;
