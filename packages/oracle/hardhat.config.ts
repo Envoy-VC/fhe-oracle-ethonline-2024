@@ -18,7 +18,12 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 
 const config: HardhatUserConfig = {
   defaultNetwork: 'localfhenix',
-  solidity: '0.8.24',
+  solidity: {
+    version: '0.8.24',
+    settings: {
+      viaIR: true,
+    },
+  },
   networks: {
     fhenixHelium: {
       url: 'https://api.helium.fhenix.zone',

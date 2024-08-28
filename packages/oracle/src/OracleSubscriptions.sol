@@ -62,12 +62,12 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
     // |                      Owner methods                           |
     // ================================================================
 
-    // /// @inheritdoc IOracleSubscriptions
-    // function ownerCancelSubscription(uint64 subscriptionId) external override {
-    //     _onlyRouterOwner();
-    //     _isExistingSubscription(subscriptionId);
-    //     _cancelSubscriptionHelper(subscriptionId, s_subscriptions[subscriptionId].owner, false);
-    // }
+    /// @inheritdoc IOracleSubscriptions
+    function ownerCancelSubscription(uint64 subscriptionId) external override {
+        _onlyRouterOwner();
+        _isExistingSubscription(subscriptionId);
+        _cancelSubscriptionHelper(subscriptionId, s_subscriptions[subscriptionId].owner);
+    }
 
     // ================================================================
     // |                   Subscription management                   |
@@ -304,9 +304,9 @@ abstract contract OracleSubscriptions is IOracleSubscriptions {
         }
     }
 
-    /// @dev Overriden in FunctionsRouter.sol
+    /// @dev Overriden in OracleRouter.sol
     function _onlyRouterOwner() internal virtual;
 
-    /// @dev Overriden in FunctionsRouter.sol
+    /// @dev Overriden in OracleRouter.sol
     function _whenNotPaused() internal virtual;
 }

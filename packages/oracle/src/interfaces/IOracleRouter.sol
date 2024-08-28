@@ -27,12 +27,7 @@ interface IOracleRouter {
         bytes memory err,
         address transmitter,
         OracleResponse.Commitment memory commitment
-    ) external returns (OracleResponse.FulfillResult, uint96);
-
-    /// @notice Validate requested gas limit is below the subscription max.
-    /// @param subscriptionId subscription ID
-    /// @param callbackGasLimit desired callback gas limit
-    function isValidCallbackGasLimit(uint64 subscriptionId, uint32 callbackGasLimit) external view;
+    ) external returns (OracleResponse.FulfillResult);
 
     /// @dev Puts the system into an emergency stopped state.
     /// @dev Only callable by owner
