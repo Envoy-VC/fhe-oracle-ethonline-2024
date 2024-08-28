@@ -24,7 +24,7 @@
     "node": "hardhat node",
     "sol:format:check": "prettier --check --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
     "sol:format:write": "prettier --write --plugin=prettier-plugin-solidity 'contracts/**/*.sol'",
-    "solhint": "solhint -f table 'contracts/**/*.sol'",
+    "solhint": "solhint -f table 'src/**/*.sol'",
     "test": "hardhat test --typecheck"
   },
   "dependencies": {
@@ -32,6 +32,7 @@
     "@ensdomains/buffer": "^0.1.1",
     "@fhenixprotocol/contracts": "^0.2.1",
     "@openzeppelin/contracts": "^5.0.2",
+    "cbor": "^9.0.2",
     "dotenv": "^16.4.5",
     "fhenix-hardhat-docker": "^0.2.2",
     "fhenix-hardhat-plugin": "^0.2.1",

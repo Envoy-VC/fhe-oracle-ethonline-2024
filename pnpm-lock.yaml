@@ -184,6 +184,9 @@ importers:
       '@openzeppelin/contracts':
         specifier: ^5.0.2
         version: 5.0.2
+      cbor:
+        specifier: ^9.0.2
+        version: 9.0.2
       dotenv:
         specifier: ^16.4.5
         version: 16.4.5
@@ -196,9 +199,6 @@ importers:
       fhenixjs:
         specifier: 0.4.0-alpha.0
         version: 0.4.0-alpha.0
-      solidity-docgen:
-        specifier: 0.6.0-beta.36
-        version: 0.6.0-beta.36(hardhat@2.22.9(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@22.2.0)(typescript@5.5.4))(typescript@5.5.4)(utf-8-validate@5.0.10))
     devDependencies:
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.7
@@ -257,6 +257,9 @@ importers:
       solidity-coverage:
         specifier: ^0.8.12
         version: 0.8.12(hardhat@2.22.9(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@22.2.0)(typescript@5.5.4))(typescript@5.5.4)(utf-8-validate@5.0.10))
+      solidity-docgen:
+        specifier: 0.6.0-beta.36
+        version: 0.6.0-beta.36(hardhat@2.22.9(bufferutil@4.0.8)(ts-node@10.9.2(@types/node@22.2.0)(typescript@5.5.4))(typescript@5.5.4)(utf-8-validate@5.0.10))
       typechain:
         specifier: ^8.3.2
         version: 8.3.2(typescript@5.5.4)
