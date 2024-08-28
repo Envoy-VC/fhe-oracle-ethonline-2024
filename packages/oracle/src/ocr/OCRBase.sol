@@ -101,7 +101,7 @@ abstract contract OCRBase is OCRAbstract {
         // Check if the Oracle Exists
         Oracle memory oracle = s_oracles[transmitter];
 
-        if (oracle.role == Role.Unset) {
+        if (oracle.role != Role.Unset) {
             revert OracleAlreadyExists(transmitter);
         }
 

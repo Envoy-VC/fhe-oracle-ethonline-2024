@@ -199,6 +199,9 @@ importers:
       fhenixjs:
         specifier: 0.4.0-alpha.0
         version: 0.4.0-alpha.0
+      viem:
+        specifier: ^2.19.4
+        version: 2.19.4(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)(zod@3.23.8)
     devDependencies:
       '@nomicfoundation/hardhat-chai-matchers':
         specifier: ^2.0.7
@@ -15744,7 +15747,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  isows@1.0.4(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)):
+  isows@1.0.4(ws@8.17.1):
     dependencies:
       ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
 
@@ -18480,7 +18483,7 @@ snapshots:
       '@scure/bip32': 1.4.0
       '@scure/bip39': 1.3.0
       abitype: 1.0.5(typescript@5.5.4)(zod@3.23.8)
-      isows: 1.0.4(ws@8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10))
+      isows: 1.0.4(ws@8.17.1)
       webauthn-p256: 0.0.5
       ws: 8.17.1(bufferutil@4.0.8)(utf-8-validate@5.0.10)
     optionalDependencies:

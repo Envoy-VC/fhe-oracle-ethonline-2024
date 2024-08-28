@@ -36,7 +36,8 @@
     "dotenv": "^16.4.5",
     "fhenix-hardhat-docker": "^0.2.2",
     "fhenix-hardhat-plugin": "^0.2.1",
-    "fhenixjs": "0.4.0-alpha.0"
+    "fhenixjs": "0.4.0-alpha.0",
+    "viem": "^2.19.4"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.7",

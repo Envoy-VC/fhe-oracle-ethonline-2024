@@ -55,6 +55,11 @@ export const deploy = async (): Promise<FHEOracleState> => {
   const Consumer = await hre.ethers.getContractFactory('ConsumerExample');
   const consumer = await Consumer.connect(otherAccount).deploy(routerAddress);
   await consumer.waitForDeployment();
+
+  // Add Transmitter
+  const tx = await coordinator.addOracle(owner.address);
+  await tx.wait();
+
   //   const consumerAddress = await consumer.getAddress();
 
   //   const instance = await createFheInstance(hre, consumerAddress);

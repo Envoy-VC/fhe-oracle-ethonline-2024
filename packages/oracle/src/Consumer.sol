@@ -5,12 +5,17 @@ import {OracleClient} from "./OracleClient.sol";
 import {ConfirmedOwner} from "./shared/access/ConfirmedOwner.sol";
 import {OracleRequest} from "./libraries/OracleRequest.sol";
 
-contract ConsumerExample is OracleClient, ConfirmedOwner {
+import {euint32, FHE} from "@fhenixprotocol/contracts/FHE.sol";
+import "@fhenixprotocol/contracts/access/Permissioned.sol";
+
+contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
     using OracleRequest for OracleRequest.Request;
 
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
     bytes public s_lastError;
+
+    euint32 public lastResponse;
 
     error UnexpectedRequestID(bytes32 requestId);
 
@@ -72,6 +77,11 @@ contract ConsumerExample is OracleClient, ConfirmedOwner {
         }
         s_lastResponse = response;
         s_lastError = err;
+        lastResponse = FHE.asEuint32(response);
         emit Response(requestId, s_lastResponse, s_lastError);
+    }
+
+    function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
+        return FHE.sealoutput(lastResponse, perm.publicKey);
     }
 }
