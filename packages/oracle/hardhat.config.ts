@@ -8,6 +8,7 @@ import 'fhenix-hardhat-docker';
 import 'solidity-coverage';
 import '@nomiclabs/hardhat-solhint';
 import 'solidity-docgen';
+import 'hardhat-deploy';
 
 import * as dotenv from 'dotenv';
 

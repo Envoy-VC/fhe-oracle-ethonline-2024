@@ -1,11 +1,7 @@
 [
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_coordinator",
-        "type": "address"
-      },
+      { "internalType": "address", "name": "_coordinator", "type": "address" },
       {
         "components": [
           {
@@ -37,64 +33,24 @@
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
-  {
-    "inputs": [],
-    "name": "CannotRemoveWithPendingRequests",
-    "type": "error"
-  },
+  { "inputs": [], "name": "CannotRemoveWithPendingRequests", "type": "error" },
   {
     "inputs": [
-      {
-        "internalType": "bytes32",
-        "name": "requestId",
-        "type": "bytes32"
-      }
+      { "internalType": "bytes32", "name": "requestId", "type": "bytes32" }
     ],
     "name": "DuplicateRequestId",
     "type": "error"
   },
-  {
-    "inputs": [],
-    "name": "EmptyRequestData",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidCalldata",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidConsumer",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "InvalidSubscription",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "MustBeSubscriptionOwner",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "OnlyCallableFromCoordinator",
-    "type": "error"
-  },
-  {
-    "inputs": [],
-    "name": "TimeoutNotExceeded",
-    "type": "error"
-  },
+  { "inputs": [], "name": "EmptyRequestData", "type": "error" },
+  { "inputs": [], "name": "InvalidCalldata", "type": "error" },
+  { "inputs": [], "name": "InvalidConsumer", "type": "error" },
+  { "inputs": [], "name": "InvalidSubscription", "type": "error" },
+  { "inputs": [], "name": "MustBeSubscriptionOwner", "type": "error" },
+  { "inputs": [], "name": "OnlyCallableFromCoordinator", "type": "error" },
+  { "inputs": [], "name": "TimeoutNotExceeded", "type": "error" },
   {
     "inputs": [
-      {
-        "internalType": "uint16",
-        "name": "maximumConsumers",
-        "type": "uint16"
-      }
+      { "internalType": "uint16", "name": "maximumConsumers", "type": "uint16" }
     ],
     "name": "TooManyConsumers",
     "type": "error"
@@ -438,13 +394,7 @@
   {
     "inputs": [],
     "name": "MAX_CALLBACK_RETURN_BYTES",
-    "outputs": [
-      {
-        "internalType": "uint16",
-        "name": "",
-        "type": "uint16"
-      }
-    ],
+    "outputs": [{ "internalType": "uint16", "name": "", "type": "uint16" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -457,16 +407,8 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "address",
-        "name": "consumer",
-        "type": "address"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" },
+      { "internalType": "address", "name": "consumer", "type": "address" }
     ],
     "name": "addConsumer",
     "outputs": [],
@@ -475,11 +417,7 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "name": "cancelSubscription",
     "outputs": [],
@@ -503,68 +441,36 @@
     "inputs": [],
     "name": "createSubscription",
     "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "consumer",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "consumer", "type": "address" }
     ],
     "name": "createSubscriptionWithConsumer",
     "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "bytes",
-        "name": "response",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "err",
-        "type": "bytes"
-      },
-      {
-        "internalType": "address",
-        "name": "transmitter",
-        "type": "address"
-      },
+      { "internalType": "bytes", "name": "response", "type": "bytes" },
+      { "internalType": "bytes", "name": "err", "type": "bytes" },
+      { "internalType": "address", "name": "transmitter", "type": "address" },
       {
         "components": [
-          {
-            "internalType": "bytes32",
-            "name": "requestId",
-            "type": "bytes32"
-          },
+          { "internalType": "bytes32", "name": "requestId", "type": "bytes32" },
           {
             "internalType": "address",
             "name": "coordinator",
             "type": "address"
           },
-          {
-            "internalType": "address",
-            "name": "client",
-            "type": "address"
-          },
+          { "internalType": "address", "name": "client", "type": "address" },
           {
             "internalType": "uint64",
             "name": "subscriptionId",
@@ -634,26 +540,14 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "client",
-        "type": "address"
-      },
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "address", "name": "client", "type": "address" },
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "name": "getConsumer",
     "outputs": [
       {
         "components": [
-          {
-            "internalType": "bool",
-            "name": "allowed",
-            "type": "bool"
-          },
+          { "internalType": "bool", "name": "allowed", "type": "bool" },
           {
             "internalType": "uint64",
             "name": "initiatedRequests",
@@ -688,21 +582,13 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "name": "getSubscription",
     "outputs": [
       {
         "components": [
-          {
-            "internalType": "address",
-            "name": "owner",
-            "type": "address"
-          },
+          { "internalType": "address", "name": "owner", "type": "address" },
           {
             "internalType": "address[]",
             "name": "consumers",
@@ -720,13 +606,7 @@
   {
     "inputs": [],
     "name": "getSubscriptionCount",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
-      }
-    ],
+    "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
     "stateMutability": "view",
     "type": "function"
   },
@@ -747,11 +627,7 @@
     "outputs": [
       {
         "components": [
-          {
-            "internalType": "address",
-            "name": "owner",
-            "type": "address"
-          },
+          { "internalType": "address", "name": "owner", "type": "address" },
           {
             "internalType": "address[]",
             "name": "consumers",
@@ -769,23 +645,13 @@
   {
     "inputs": [],
     "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
+    "outputs": [{ "internalType": "address", "name": "", "type": "address" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "name": "ownerCancelSubscription",
     "outputs": [],
@@ -802,47 +668,23 @@
   {
     "inputs": [],
     "name": "paused",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" }
     ],
     "name": "pendingRequestExists",
-    "outputs": [
-      {
-        "internalType": "bool",
-        "name": "",
-        "type": "bool"
-      }
-    ],
+    "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "address",
-        "name": "consumer",
-        "type": "address"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" },
+      { "internalType": "address", "name": "consumer", "type": "address" }
     ],
     "name": "removeConsumer",
     "outputs": [],
@@ -852,52 +694,24 @@
   {
     "inputs": [],
     "name": "s_currentSubscriptionId",
-    "outputs": [
-      {
-        "internalType": "uint64",
-        "name": "",
-        "type": "uint64"
-      }
-    ],
+    "outputs": [{ "internalType": "uint64", "name": "", "type": "uint64" }],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      },
-      {
-        "internalType": "uint32",
-        "name": "callbackGasLimit",
-        "type": "uint32"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" },
+      { "internalType": "bytes", "name": "data", "type": "bytes" },
+      { "internalType": "uint32", "name": "callbackGasLimit", "type": "uint32" }
     ],
     "name": "sendRequest",
-    "outputs": [
-      {
-        "internalType": "bytes32",
-        "name": "",
-        "type": "bytes32"
-      }
-    ],
+    "outputs": [{ "internalType": "bytes32", "name": "", "type": "bytes32" }],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "address",
-        "name": "_coordinator",
-        "type": "address"
-      }
+      { "internalType": "address", "name": "_coordinator", "type": "address" }
     ],
     "name": "setCoordinator",
     "outputs": [],
@@ -908,21 +722,13 @@
     "inputs": [
       {
         "components": [
-          {
-            "internalType": "bytes32",
-            "name": "requestId",
-            "type": "bytes32"
-          },
+          { "internalType": "bytes32", "name": "requestId", "type": "bytes32" },
           {
             "internalType": "address",
             "name": "coordinator",
             "type": "address"
           },
-          {
-            "internalType": "address",
-            "name": "client",
-            "type": "address"
-          },
+          { "internalType": "address", "name": "client", "type": "address" },
           {
             "internalType": "uint64",
             "name": "subscriptionId",
@@ -950,13 +756,7 @@
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "to",
-        "type": "address"
-      }
-    ],
+    "inputs": [{ "internalType": "address", "name": "to", "type": "address" }],
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
@@ -964,16 +764,8 @@
   },
   {
     "inputs": [
-      {
-        "internalType": "uint64",
-        "name": "subscriptionId",
-        "type": "uint64"
-      },
-      {
-        "internalType": "address",
-        "name": "newOwner",
-        "type": "address"
-      }
+      { "internalType": "uint64", "name": "subscriptionId", "type": "uint64" },
+      { "internalType": "address", "name": "newOwner", "type": "address" }
     ],
     "name": "transferSubscriptionOwnership",
     "outputs": [],
@@ -983,13 +775,7 @@
   {
     "inputs": [],
     "name": "typeAndVersion",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
+    "outputs": [{ "internalType": "string", "name": "", "type": "string" }],
     "stateMutability": "view",
     "type": "function"
   },
