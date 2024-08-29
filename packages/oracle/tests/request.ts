@@ -93,7 +93,7 @@ describe('Oracle Requests', () => {
       otherAccount
     );
 
-    // const encryptedData = (await fheOwner.instance.encrypt_uint32(23)).data;
+    // const encryptedData = (await fheOther.instance.encrypt_uint32(23)).data;
     // const encryptedResult = `0x${Buffer.from(encryptedData).toString('hex')}`;
     const encryptedResult = `0x22`;
 

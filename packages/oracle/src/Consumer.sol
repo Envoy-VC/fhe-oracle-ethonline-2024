@@ -5,7 +5,7 @@ import {OracleClient} from "./OracleClient.sol";
 import {ConfirmedOwner} from "./shared/access/ConfirmedOwner.sol";
 import {OracleRequest} from "./libraries/OracleRequest.sol";
 
-import {euint32, FHE} from "@fhenixprotocol/contracts/FHE.sol";
+import {euint256, FHE} from "@fhenixprotocol/contracts/FHE.sol";
 import "@fhenixprotocol/contracts/access/Permissioned.sol";
 
 contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
@@ -15,7 +15,7 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
     bytes public s_lastResponse;
     bytes public s_lastError;
 
-    euint32 public lastResponse;
+    euint256 public lastResponse;
 
     error UnexpectedRequestID(bytes32 requestId);
 
@@ -77,8 +77,14 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         }
         s_lastResponse = response;
         s_lastError = err;
-        lastResponse = FHE.asEuint32(0x22);
+        lastResponse = FHE.asEuint256(response);
         emit Response(requestId, s_lastResponse, s_lastError);
+    }
+
+    function bytesToUint32(bytes memory b) public pure returns (uint256) {
+        require(b.length >= 4, "Bytes array too short");
+        bytes32 b32 = bytes32(b);
+        return uint256(b32);
     }
 
     function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
