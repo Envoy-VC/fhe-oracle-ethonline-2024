@@ -16,6 +16,8 @@ const func: DeployFunction = async function () {
 
   console.log('Deploying With Address: ', signer.address);
 
+  console.log(await hre.network.provider.send('eth_chainId'));
+
   if (
     (await ethers.provider.getBalance(signer.address)).toString() === '0' ||
     (await ethers.provider.getBalance(otherAccount.address)).toString() === '0'

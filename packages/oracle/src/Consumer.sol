@@ -5,17 +5,21 @@ import {OracleClient} from "./OracleClient.sol";
 import {ConfirmedOwner} from "./shared/access/ConfirmedOwner.sol";
 import {OracleRequest} from "./libraries/OracleRequest.sol";
 
-import {euint256, FHE} from "@fhenixprotocol/contracts/FHE.sol";
-import "@fhenixprotocol/contracts/access/Permissioned.sol";
+// import "hardhat/console.sol";
 
-contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
+// import {BytesLib} from "@fhenixprotocol/contracts/experimental/utils/BytesLib.sol";
+
+// import {euint256, FHE} from "@fhenixprotocol/contracts/FHE.sol";
+// import "@fhenixprotocol/contracts/access/Permissioned.sol";
+
+contract ConsumerExample is OracleClient, ConfirmedOwner {
     using OracleRequest for OracleRequest.Request;
 
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
     bytes public s_lastError;
 
-    euint256 public lastResponse;
+    // euint256 public lastResponse;
 
     error UnexpectedRequestID(bytes32 requestId);
 
@@ -77,17 +81,14 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         }
         s_lastResponse = response;
         s_lastError = err;
-        lastResponse = FHE.asEuint256(response);
+        // console.logBytes(response);
+        // uint256 r = BytesLib.toUint256(response, 0);
+        // console.log("Response: %s", r);
+        // lastResponse = FHE.asEuint256(r);
         emit Response(requestId, s_lastResponse, s_lastError);
     }
 
-    function bytesToUint32(bytes memory b) public pure returns (uint256) {
-        require(b.length >= 4, "Bytes array too short");
-        bytes32 b32 = bytes32(b);
-        return uint256(b32);
-    }
-
-    function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
-        return FHE.sealoutput(lastResponse, perm.publicKey);
-    }
+    // function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
+    //     return FHE.sealoutput(lastResponse, perm.publicKey);
+    // }
 }
