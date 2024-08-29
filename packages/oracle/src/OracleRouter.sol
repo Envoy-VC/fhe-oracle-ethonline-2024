@@ -296,8 +296,6 @@ contract OracleRouter is IOracleRouter, OracleSubscriptions, Pausable, ITypeAndV
 
         bool success;
         uint256 gasUsed;
-        // allocate return data memory ahead of time
-        bytes memory returnData = new bytes(MAX_CALLBACK_RETURN_BYTES);
 
         assembly {
             let g := gas()
@@ -317,7 +315,12 @@ contract OracleRouter is IOracleRouter, OracleSubscriptions, Pausable, ITypeAndV
             let gasBeforeCall := gas()
             success := call(callbackGasLimit, client, 0, add(encodedCallback, 0x20), mload(encodedCallback), 0, 0)
             gasUsed := sub(gasBeforeCall, gas())
+        }
 
+        // allocate return data memory ahead of time
+        bytes memory returnData = new bytes(MAX_CALLBACK_RETURN_BYTES);
+
+        assembly {
             // limit our copy to MAX_CALLBACK_RETURN_BYTES bytes
             let toCopy := returndatasize()
             if gt(toCopy, MAX_CALLBACK_RETURN_BYTES) { toCopy := MAX_CALLBACK_RETURN_BYTES }

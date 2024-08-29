@@ -5,21 +5,17 @@ import {OracleClient} from "./OracleClient.sol";
 import {ConfirmedOwner} from "./shared/access/ConfirmedOwner.sol";
 import {OracleRequest} from "./libraries/OracleRequest.sol";
 
-// import "hardhat/console.sol";
+import {euint256, FHE} from "@fhenixprotocol/contracts/FHE.sol";
+import "@fhenixprotocol/contracts/access/Permissioned.sol";
 
-// import {BytesLib} from "@fhenixprotocol/contracts/experimental/utils/BytesLib.sol";
-
-// import {euint256, FHE} from "@fhenixprotocol/contracts/FHE.sol";
-// import "@fhenixprotocol/contracts/access/Permissioned.sol";
-
-contract ConsumerExample is OracleClient, ConfirmedOwner {
+contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
     using OracleRequest for OracleRequest.Request;
 
     bytes32 public s_lastRequestId;
     bytes public s_lastResponse;
     bytes public s_lastError;
 
-    // euint256 public lastResponse;
+    euint256 public lastResponse;
 
     error UnexpectedRequestID(bytes32 requestId);
 
@@ -81,14 +77,11 @@ contract ConsumerExample is OracleClient, ConfirmedOwner {
         }
         s_lastResponse = response;
         s_lastError = err;
-        // console.logBytes(response);
-        // uint256 r = BytesLib.toUint256(response, 0);
-        // console.log("Response: %s", r);
-        // lastResponse = FHE.asEuint256(r);
+        lastResponse = FHE.asEuint256(s_lastResponse);
         emit Response(requestId, s_lastResponse, s_lastError);
     }
 
-    // function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
-    //     return FHE.sealoutput(lastResponse, perm.publicKey);
-    // }
+    function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
+        return FHE.sealoutput(lastResponse, perm.publicKey);
+    }
 }

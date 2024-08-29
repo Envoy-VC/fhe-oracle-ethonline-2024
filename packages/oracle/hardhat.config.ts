@@ -21,9 +21,6 @@ const config: HardhatUserConfig = {
   defaultNetwork: 'localfhenix',
   solidity: {
     version: '0.8.24',
-    settings: {
-      viaIR: true,
-    },
   },
   networks: {
     fhenixHelium: {

@@ -234,19 +234,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
         OracleResponse.Commitment memory commitment = abi.decode(onchainMetadata, (OracleResponse.Commitment));
 
         // The Functions Router will perform the callback to the client contract
-        (OracleResponse.FulfillResult resultCode) = _getRouter().fulfill(
-            response,
-            err,
-            msg.sender,
-            OracleResponse.Commitment({
-                requestId: commitment.requestId,
-                coordinator: commitment.coordinator,
-                client: commitment.client,
-                subscriptionId: commitment.subscriptionId,
-                callbackGasLimit: commitment.callbackGasLimit,
-                timeoutTimestamp: commitment.timeoutTimestamp
-            })
-        );
+        (OracleResponse.FulfillResult resultCode) = _getRouter().fulfill(response, err, msg.sender, commitment);
 
         // In these two fulfillment results the request will be deleted or else
         // request will be on hold.

@@ -7,6 +7,9 @@ import hre from 'hardhat';
 
 describe('Oracle Requests', () => {
   let state: FHEOracleState;
+  let subscriptionId: string;
+  let requestId: string;
+
   before(async () => {
     state = await deploy();
   });
@@ -24,6 +27,8 @@ describe('Oracle Requests', () => {
       owner: string;
     };
 
+    subscriptionId = res.subscriptionId;
+
     const t1 = await router
       .connect(otherAccount)
       .addConsumer(res.subscriptionId, await consumer.getAddress());
@@ -32,7 +37,7 @@ describe('Oracle Requests', () => {
   };
   it('should send request to oracle', async () => {
     const { router, consumer, otherAccount } = state;
-    const { subscriptionId } = await createSubscription();
+    await createSubscription();
 
     const res = await consumer
       .connect(otherAccount)
@@ -41,7 +46,7 @@ describe('Oracle Requests', () => {
         '123',
         1,
         [{ key: 'name', value: 'vedant' }],
-        '300000'
+        '3000000'
       );
     await res.wait();
     const event = (
@@ -52,13 +57,15 @@ describe('Oracle Requests', () => {
       throw new Error('Request Id not found');
     }
 
+    requestId = event.requestId;
+
     expect(event.subscriptionId).to.equal(subscriptionId);
     expect(event.data).to.not.be.undefined;
     expect(event.subscriptionOwner).to.equal(otherAccount.address);
     expect(event.requestingContract).to.equal(await consumer.getAddress());
   });
   it('should fullfill request', async () => {
-    const { owner, coordinator, consumer } = state;
+    const { owner, coordinator, consumer, otherAccount } = state;
 
     const event = (
       await coordinator.queryFilter(coordinator.filters.Request, -1)
@@ -80,18 +87,16 @@ describe('Oracle Requests', () => {
       ]
     );
 
-    console.log('Request Id: ', event.commitment.requestId);
-    const requestId = event.commitment.requestId;
+    const fheOther = await createFheInstance(
+      hre,
+      await consumer.getAddress(),
+      otherAccount
+    );
 
-    // const fheOther = await createFheInstance(
-    //   hre,
-    //   await consumer.getAddress(),
-    //   otherAccount
-    // );
-
-    // const encryptedData = (await fheOther.instance.encrypt_uint32(23)).data;
-    // const encryptedResult = `0x${Buffer.from(encryptedData).toString('hex')}`;
-    const encryptedResult = '0x01';
+    const encryptedData = (await fheOther.instance.encrypt_uint256('23')).data;
+    const encryptedResult = `0x${Buffer.from(encryptedData).toString('hex')}`;
+    console.log(encryptedResult);
+    // const encryptedResult = '0x22';
 
     const signers = [owner.address];
 
@@ -129,9 +134,13 @@ describe('Oracle Requests', () => {
 
     const tx = await coordinator
       .connect(owner)
-      .transmit(signers, report, reportHash, [r], [s], [v]);
+      .transmit(signers, report, reportHash, [r], [s], [v], {
+        gasLimit: 30000000,
+      });
 
     await tx.wait();
+
+    console.log(tx.hash);
 
     const consumerEvent = (
       await consumer.queryFilter(consumer.filters.Response, -1)
@@ -143,14 +152,14 @@ describe('Oracle Requests', () => {
       error: consumerEvent?.err,
     });
 
-    // const sealedValue = await consumer
-    //   .connect(otherAccount)
-    //   .getLastResponse(fheOther.permission);
+    const sealedValue = await consumer
+      .connect(otherAccount)
+      .getLastResponse(fheOther.permission);
 
-    // const unsealed = fheOther.instance.unseal(
-    //   await consumer.getAddress(),
-    //   sealedValue
-    // );
-    // console.log('Decrypted Value', unsealed);
+    const unsealed = fheOther.instance.unseal(
+      await consumer.getAddress(),
+      sealedValue
+    );
+    console.log('Decrypted Value', unsealed);
   });
 });
