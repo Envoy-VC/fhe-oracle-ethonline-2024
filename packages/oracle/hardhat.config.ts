@@ -28,6 +28,21 @@ const config: HardhatUserConfig = {
       chainId: 8008135,
       accounts: PRIVATE_KEY ? [PRIVATE_KEY] : { mnemonic: MNEMONIC },
     },
+    localfhenix: {
+      gas: 'auto',
+      gasMultiplier: 2,
+      gasPrice: 'auto',
+      timeout: 10_000,
+      httpHeaders: {},
+      url: 'http://127.0.0.1:42069',
+      accounts: {
+        mnemonic:
+          'demand hotel mass rally sphere tiger measure sick spoon evoke fashion comfort',
+        path: "m/44'/60'/0'/0",
+        initialIndex: 0,
+        count: 20,
+      },
+    },
   },
   docgen: {
     outputDir: 'docs',
@@ -35,7 +50,7 @@ const config: HardhatUserConfig = {
   },
   paths: {
     sources: 'src',
-    tests: 'tests',
+    tests: './tests',
   },
 };
 

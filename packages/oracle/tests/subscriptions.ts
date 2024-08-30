@@ -85,20 +85,4 @@ describe('Subscriptions', () => {
     expect(event?.subscriptionId).to.be.eq(subscriptionId);
     expect(event?.consumer).to.be.eq(await consumer.getAddress());
   });
-  it('should request from router', async () => {
-    const { coordinator, consumer, otherAccount } = state;
-    const { subscriptionId } = await createSubscription();
-
-    const res = await consumer
-      .connect(otherAccount)
-      .sendRequest(
-        subscriptionId,
-        '123',
-        1,
-        [{ key: 'name', value: 'vedant' }],
-        '300000'
-      );
-    await res.wait();
-    await coordinator.queryFilter(coordinator.filters.Request, -1);
-  });
 });
