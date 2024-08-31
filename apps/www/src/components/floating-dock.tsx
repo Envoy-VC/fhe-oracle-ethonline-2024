@@ -3,7 +3,6 @@
  * Desktop navbar is better positioned at the bottom
  * Mobile navbar is better positioned at bottom right.
  **/
-import Image from 'next/image';
 import Link from 'next/link';
 
 import { useRef, useState } from 'react';
@@ -18,10 +17,8 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
-import Logo from 'public/icon.svg';
 
 import {
-  FlaskConicalIcon,
   GithubIcon,
   HouseIcon,
   LayoutPanelTop,
@@ -241,26 +238,6 @@ export const FloatingDock = () => {
       href: '#architecture',
     },
     {
-      title: 'FHE Oracle',
-      icon: (
-        <Image
-          alt='FHE Oracle Logo'
-          height={32}
-          src={Logo as unknown as string}
-          width={32}
-        />
-      ),
-      href: '#',
-    },
-    {
-      title: 'Solutions',
-      icon: (
-        <FlaskConicalIcon className='h-full w-full text-neutral-500 dark:text-neutral-300' />
-      ),
-      href: '#solutions',
-    },
-
-    {
       title: 'FAQ',
       icon: (
         <TableOfContentsIcon className='h-full w-full text-neutral-500 dark:text-neutral-300' />
@@ -276,7 +253,7 @@ export const FloatingDock = () => {
     },
   ];
   return (
-    <div className='dark fixed bottom-12 flex w-full items-center justify-center'>
+    <div className='dark fixed bottom-12 flex w-full max-w-[1400px] justify-center'>
       <FloatingDockComponent items={links} />
     </div>
   );

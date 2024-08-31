@@ -2,22 +2,14 @@
 
 import React from 'react';
 
-import {
-  Architecture,
-  Faq,
-  Features,
-  FloatingDock,
-  Hero,
-  Solutions,
-} from '~/components';
+import { Architecture, Faq, Features, FloatingDock, Hero } from '~/components';
 
 const Home = () => {
   return (
-    <div className='mx-auto flex w-full max-w-[1400px] flex-col gap-12 px-3 overflow-hidden'>
+    <div className='mx-auto flex w-full max-w-[1400px] flex-col gap-12 overflow-hidden px-3 pb-24'>
       <Hero />
       <Features />
       <Architecture />
-      <Solutions />
       <Faq />
       <FloatingDock />
     </div>
