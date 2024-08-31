@@ -7,6 +7,7 @@ import type { Metadata } from 'next';
 import { cookieToInitialState } from 'wagmi';
 import { Web3Provider } from '~/providers';
 import '~/styles/globals.css';
+import { TRPCReactProvider } from '~/trpc/react';
 
 import { Toaster } from '~/components/ui/sonner';
 
@@ -25,7 +26,9 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <html lang='en'>
       <body className={`font-sans ${GeistSans.variable}`}>
-        <Web3Provider initialState={initialState}>{children}</Web3Provider>
+        <TRPCReactProvider>
+          <Web3Provider initialState={initialState}>{children}</Web3Provider>
+        </TRPCReactProvider>
         <Toaster />
       </body>
     </html>

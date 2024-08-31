@@ -1,11 +1,31 @@
+'use client';
+
 import React from 'react';
 
-import { Navbar } from '~/components';
+import { Hero } from '~/components';
+
+import { Button } from '~/components/ui/button';
 
 const Home = () => {
   return (
     <div>
-      <Navbar />
+      <Hero />
+      <Button
+        onClick={async () => {
+          const res = await fetch('/api/fulfill', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              data: 'Hello, World!',
+            }),
+          });
+
+          const data = await res.json();
+          console.log(data);
+        }}
+      >
+        Run Action
+      </Button>
     </div>
   );
 };
