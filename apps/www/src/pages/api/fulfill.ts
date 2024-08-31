@@ -10,6 +10,7 @@ import { LIT_RPC, LitNetwork } from '@lit-protocol/constants';
 import { LitNodeClientNodeJs } from '@lit-protocol/lit-node-client-nodejs';
 import { ethers } from 'ethers';
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { env } from '~/env';
 
 export default async function handler(
   req: NextApiRequest,
@@ -20,17 +21,11 @@ export default async function handler(
     url: LIT_RPC.CHRONICLE_YELLOWSTONE,
   });
 
-  const wallet = new ethers.Wallet(
-    '0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80',
-    provider
-  );
+  const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
 
   const client = new LitNodeClientNodeJs({
     alertWhenUnauthorized: false,
     litNetwork: LitNetwork.DatilDev,
-    // storageProvider: {
-    //   provider: new LocalStorage('./lit_storage.db'),
-    // },
   });
 
   await client.connect();
@@ -89,15 +84,7 @@ export default async function handler(
     code: litActionCode,
     sessionSigs: sessionSignatures,
     jsParams: {
-      //   toSign: [
-      //     84, 104, 105, 115, 32, 109, 101, 115, 115, 97, 103, 101, 32, 105, 115,
-      //     32, 101, 120, 97, 99, 116, 108, 121, 32, 51, 50, 32, 98, 121, 116, 101,
-      //     115,
-      //   ],
       day: '1',
-      //   sigName: 'sig1',
-      //   publicKey:
-      //     '0x02e5896d70c1bc4b4844458748fe0f936c7919d7968341e391fb6d82c258192e64',
     },
   });
 
