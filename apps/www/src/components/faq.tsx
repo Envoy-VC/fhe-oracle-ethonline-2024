@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { Variants, motion } from 'framer-motion';
+import { type Variants, motion } from 'framer-motion';
 
 import { AnimateChangeInHeight } from './animate-height';
 

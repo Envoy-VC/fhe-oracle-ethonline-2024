@@ -30,9 +30,6 @@ importers:
       '@lit-protocol/constants':
         specifier: ^6.4.10
         version: 6.4.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)
-      '@lit-protocol/crypto':
-        specifier: ^6.4.10
-        version: 6.4.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)
       '@lit-protocol/lit-node-client-nodejs':
         specifier: ^6.4.10
         version: 6.4.10(bufferutil@4.0.8)(typescript@5.5.4)(utf-8-validate@5.0.10)
@@ -96,18 +93,12 @@ importers:
       next-themes:
         specifier: ^0.3.0
         version: 0.3.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      node-localstorage:
-        specifier: ^3.0.5
-        version: 3.0.5
       react:
         specifier: ^18
         version: 18.3.1
       react-dom:
         specifier: ^18
         version: 18.3.1(react@18.3.1)
-      siwe:
-        specifier: ^2.3.2
-        version: 2.3.2(ethers@5.7.2(bufferutil@4.0.8)(utf-8-validate@5.0.10))
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -6450,10 +6441,6 @@ packages:
   node-int64@0.4.0:
     resolution: {integrity: sha512-O5lz91xSOeoXP6DulyHfllpq+Eg00MWitZIbtPfoSEvqIHdl5gfcY6hYzDWnj0qD5tz52PI08u9qUvSVeUBeHw==}
 
-  node-localstorage@3.0.5:
-    resolution: {integrity: sha512-GCwtK33iwVXboZWYcqQHu3aRvXEBwmPkAMRBLeaX86ufhqslyUkLGsi4aW3INEfdQYpUB5M9qtYf3eHvAk2VBg==}
-    engines: {node: '>=0.12'}
-
   node-releases@2.0.14:
     resolution: {integrity: sha512-y10wOWt8yZpqXmOgRo77WaHEmhYQYGNA6y421PKsKYWEK8aW+cqAphborZDhqfyKrbZEN92CN1X2KbafY2s7Yw==}
 
@@ -8420,10 +8407,6 @@ packages:
 
   write-file-atomic@2.4.3:
     resolution: {integrity: sha512-GaETH5wwsX+GcnzhPgKcKjJ6M2Cq3/iZp1WyY/X1CSqrW+jVNM9Y7D8EC2sM4ZG/V8wZlSniJnCKWPmBYAucRQ==}
-
-  write-file-atomic@5.0.1:
-    resolution: {integrity: sha512-+QU2zd6OTD8XWIJCbffaiQeH9U73qIqafo1x6V1snCWYGJf6cVE0cDR4D8xRzcEnfI21IFrUPzPGtcPf8AC+Rw==}
-    engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
 
   ws@6.2.3:
     resolution: {integrity: sha512-jmTjYU0j60B+vHey6TfR3Z7RD61z/hmxBS3VMSGIrroOWXQEneK1zNuotOUrGyBHQj0yrpsLHPWtigEFd13ndA==}
@@ -17553,10 +17536,6 @@ snapshots:
 
   node-int64@0.4.0: {}
 
-  node-localstorage@3.0.5:
-    dependencies:
-      write-file-atomic: 5.0.1
-
   node-releases@2.0.14: {}
 
   node-releases@2.0.18: {}
@@ -19703,11 +19682,6 @@ snapshots:
       graceful-fs: 4.2.11
       imurmurhash: 0.1.4
       signal-exit: 3.0.7
-
-  write-file-atomic@5.0.1:
-    dependencies:
-      imurmurhash: 0.1.4
-      signal-exit: 4.1.0
 
   ws@6.2.3(bufferutil@4.0.8)(utf-8-validate@5.0.10):
     dependencies:

@@ -13,7 +13,6 @@
   "dependencies": {
     "@lit-protocol/auth-helpers": "^6.4.10",
     "@lit-protocol/constants": "^6.4.10",
-    "@lit-protocol/crypto": "^6.4.10",
     "@lit-protocol/lit-node-client-nodejs": "^6.4.10",
     "@lit-protocol/types": "^6.4.10",
     "@radix-ui/react-dialog": "^1.1.1",
@@ -35,10 +34,8 @@
     "lucide-react": "^0.427.0",
     "next": "^14",
     "next-themes": "^0.3.0",
-    "node-localstorage": "^3.0.5",
     "react": "^18",
     "react-dom": "^18",
-    "siwe": "^2.3.2",
     "sonner": "^1.5.0",
     "superjson": "^2.2.1",
     "tailwind-merge": "^2.5.0",
