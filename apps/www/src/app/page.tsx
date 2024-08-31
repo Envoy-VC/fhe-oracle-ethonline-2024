@@ -2,30 +2,24 @@
 
 import React from 'react';
 
-import { Hero } from '~/components';
-
-import { Button } from '~/components/ui/button';
+import {
+  Architecture,
+  Faq,
+  Features,
+  FloatingDock,
+  Hero,
+  Solutions,
+} from '~/components';
 
 const Home = () => {
   return (
-    <div>
+    <div className='mx-auto flex w-full max-w-[1400px] flex-col gap-12 px-3 overflow-hidden'>
       <Hero />
-      <Button
-        onClick={async () => {
-          const res = await fetch('/api/fulfill', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              data: 'Hello, World!',
-            }),
-          });
-
-          const data = await res.json();
-          console.log(data);
-        }}
-      >
-        Run Action
-      </Button>
+      <Features />
+      <Architecture />
+      <Solutions />
+      <Faq />
+      <FloatingDock />
     </div>
   );
 };
