@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion -- safe */
 import type { HardhatUserConfig } from 'hardhat/config';
 import '@nomicfoundation/hardhat-toolbox';
 import '@nomicfoundation/hardhat-ethers';
@@ -9,6 +10,7 @@ import 'solidity-coverage';
 import '@nomiclabs/hardhat-solhint';
 import 'solidity-docgen';
 import 'hardhat-deploy';
+import './tasks';
 
 import * as dotenv from 'dotenv';
 
@@ -35,13 +37,10 @@ const config: HardhatUserConfig = {
       timeout: 10_000,
       httpHeaders: {},
       url: 'http://127.0.0.1:42069',
-      accounts: {
-        mnemonic:
-          'demand hotel mass rally sphere tiger measure sick spoon evoke fashion comfort',
-        path: "m/44'/60'/0'/0",
-        initialIndex: 0,
-        count: 20,
-      },
+      accounts: [
+        process.env.PRIVATE_KEY_OWNER!,
+        process.env.PRIVATE_KEY_OTHER!,
+      ],
     },
   },
   docgen: {

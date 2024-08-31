@@ -40,7 +40,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
 
     event ConfigUpdated(OracleConfig config);
 
-    event Request(
+    event RequestSent(
         bytes32 indexed requestId,
         address indexed requestingContract,
         address requestInitiator,
@@ -50,7 +50,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
         uint64 callbackGasLimit,
         OracleResponse.Commitment commitment
     );
-    event Response(bytes32 indexed requestId, address transmitter);
+    event ResponseReceived(bytes32 indexed requestId, address transmitter);
 
     error InconsistentReportData();
     error EmptyPublicKey();
@@ -139,7 +139,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
 
         s_requestCommitments[requestId] = keccak256(abi.encode(commitment));
 
-        emit Request(
+        emit RequestSent(
             commitment.requestId,
             request.requestingContract,
             // solhint-disable-next-line avoid-tx-origin
@@ -215,7 +215,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
                 result == OracleResponse.FulfillResult.FULFILLED
                     || result == OracleResponse.FulfillResult.USER_CALLBACK_ERROR
             ) {
-                emit Response(decodedReport.requestIds[i], msg.sender);
+                emit ResponseReceived(decodedReport.requestIds[i], msg.sender);
             }
         }
     }

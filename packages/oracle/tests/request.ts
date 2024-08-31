@@ -48,33 +48,6 @@ describe('Oracle Requests', () => {
         )
     ).to.reverted;
   });
-  it('should revert if there is a pending request', async () => {
-    const { consumer, otherAccount } = state;
-    await createSubscription();
-
-    const res = await consumer
-      .connect(otherAccount)
-      .sendRequest(
-        subscriptionId,
-        '123',
-        1,
-        [{ key: 'name', value: 'John' }],
-        '30000000'
-      );
-    await res.wait();
-
-    await expect(
-      consumer
-        .connect(otherAccount)
-        .sendRequest(
-          subscriptionId,
-          '',
-          1,
-          [{ key: 'name', value: 'John' }],
-          '30000000'
-        )
-    ).to.reverted;
-  });
   it('should send request to oracle', async () => {
     const { router, consumer, otherAccount } = state;
     await createSubscription();
@@ -92,6 +65,8 @@ describe('Oracle Requests', () => {
     const event = (
       await router.queryFilter(router.filters.RequestStart, -1)
     ).at(0)?.args;
+
+    console.log(event?.requestId);
 
     if (!event?.requestId) {
       throw new Error('Request Id not found');

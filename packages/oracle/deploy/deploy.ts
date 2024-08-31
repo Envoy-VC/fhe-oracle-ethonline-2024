@@ -3,35 +3,25 @@ import type { DeployFunction } from 'hardhat-deploy/types';
 
 import hre from 'hardhat';
 import { ZeroAddress } from 'ethers';
-import { writeFileSync } from 'node:fs';
 
 const func: DeployFunction = async function () {
-  const { fhenixjs, ethers } = hre;
-  const deployPlugin = hre.deployments;
-  const [signer, otherAccount] = await ethers.getSigners();
+  const { ethers } = hre;
+  // eslint-disable-next-line @typescript-eslint/unbound-method -- safe
+  const { deploy } = hre.deployments;
+  const [owner, otherAccount] = await ethers.getSigners();
 
-  if (!signer || !otherAccount) {
-    throw new Error('No signer available');
+  if (!owner || !otherAccount) {
+    throw new Error('No owner available');
   }
 
-  console.log('Deploying With Address: ', signer.address);
+  console.log('Deploying with  Address: ', owner.address);
+  await hre.fhenixjs.getFunds(owner.address);
+  await hre.fhenixjs.getFunds(otherAccount.address);
 
-  console.log(await hre.network.provider.send('eth_chainId'));
+  // deployPlugin.getSigner();
 
-  if (
-    (await ethers.provider.getBalance(signer.address)).toString() === '0' ||
-    (await ethers.provider.getBalance(otherAccount.address)).toString() === '0'
-  ) {
-    if (hre.network.name === 'localfhenix') {
-      await fhenixjs.getFunds(signer.address);
-      await fhenixjs.getFunds(otherAccount.address);
-    } else {
-      throw new Error('No funds in signer account');
-    }
-  }
-
-  const router = await deployPlugin.deploy('OracleRouter', {
-    from: signer.address,
+  const router = await deploy('OracleRouter', {
+    from: owner.address,
     args: [
       ZeroAddress,
       {
@@ -41,23 +31,31 @@ const func: DeployFunction = async function () {
         maxCallbackGasLimits: [BigInt(3000)],
       },
     ],
-    skipIfAlreadyDeployed: true,
+    skipIfAlreadyDeployed: false,
   });
 
-  const coordinator = await deployPlugin.deploy('OracleCoordinator', {
-    from: signer.address,
+  const coordinator = await deploy('OracleCoordinator', {
+    from: owner.address,
     args: [
-      signer.address,
+      owner.address,
       router.address,
       { requestTimeoutSeconds: BigInt(5 * 50) },
     ],
-    skipIfAlreadyDeployed: true,
+    skipIfAlreadyDeployed: false,
   });
 
-  const consumer = await deployPlugin.deploy('ConsumerExample', {
+  const routerContract = await ethers.getContractAt(
+    'OracleRouter',
+    router.address
+  );
+
+  const tx1 = await routerContract.setCoordinator(coordinator.address);
+  await tx1.wait();
+
+  const consumer = await deploy('ConsumerExample', {
     from: otherAccount.address,
     args: [router.address],
-    skipIfAlreadyDeployed: true,
+    skipIfAlreadyDeployed: false,
   });
 
   const contract = await ethers.getContractAt(
@@ -65,24 +63,12 @@ const func: DeployFunction = async function () {
     coordinator.address
   );
 
-  const tx = await contract.addOracle(signer.address);
+  const tx = await contract.connect(owner).addOracle(owner.address);
   await tx.wait();
 
   console.log(`Router contract: `, router.address);
   console.log(`Coordinator contract: `, coordinator.address);
   console.log(`Consumer contract: `, consumer.address);
-
-  const basePath = '../indexer/abi';
-
-  writeFileSync(`${basePath}/OracleRouter.json`, JSON.stringify(router.abi));
-  writeFileSync(
-    `${basePath}/OracleCoordinator.json`,
-    JSON.stringify(coordinator.abi)
-  );
-  writeFileSync(
-    `${basePath}/ConsumerExample.json`,
-    JSON.stringify(consumer.abi)
-  );
 };
 
 export default func;

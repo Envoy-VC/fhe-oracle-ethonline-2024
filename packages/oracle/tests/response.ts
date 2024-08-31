@@ -65,7 +65,7 @@ describe('Oracle Response', () => {
     await createRequest();
 
     const event = (
-      await coordinator.queryFilter(coordinator.filters.Request, -1)
+      await coordinator.queryFilter(coordinator.filters.RequestSent, -1)
     ).at(0)?.args;
 
     if (!event) {
