@@ -2,11 +2,14 @@
 
 import React, { useState } from 'react';
 
+import { useChainId } from 'wagmi';
+
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 
 export const AddConsumer = () => {
   const [consumerAddress, setConsumerAddress] = useState<string>('');
+  const chainId = useChainId();
 
   const onAdd = () => {
     // TODO: Call contract to create a subscription
