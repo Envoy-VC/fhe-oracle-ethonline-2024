@@ -126,7 +126,7 @@ abstract contract OCRBase is OCRAbstract {
         emit OracleRemoved(transmitter);
     }
 
-    function _isOracle(address transmitter) internal view returns (bool) {
+    function _isOracleNode(address transmitter) internal view returns (bool) {
         return s_oracles[transmitter].role == Role.Transmitter;
     }
 

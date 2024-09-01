@@ -102,8 +102,8 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
         _addOracle(transmitter);
     }
 
-    function isOracle(address transmitter) public view override returns (bool) {
-        return _isOracle(transmitter);
+    function isOracleNode(address transmitter) public view override returns (bool) {
+        return _isOracleNode(transmitter);
     }
 
     // ===================================================================
