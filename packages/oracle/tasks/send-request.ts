@@ -36,13 +36,7 @@ task('task:send-request').setAction(async (_args, hre) => {
 
   const res1 = await consumer
     .connect(otherAccount)
-    .sendRequest(
-      res.subscriptionId,
-      '123',
-      1,
-      [{ key: 'name', value: 'John' }],
-      '30000000'
-    );
+    .sendRequest(res.subscriptionId, '123', 1, '0x', '0x', '30000000');
   await res1.wait();
   const event = (await router.queryFilter(router.filters.RequestStart, -1)).at(
     0

@@ -21,11 +21,6 @@ library OracleRequest {
     }
     // In future version we may add other languages
 
-    struct Argument {
-        string key;
-        string value;
-    }
-
     struct Request {
         // Location of the source code that will be executed on Lit Nodes.
         Location codeLocation;
@@ -33,13 +28,13 @@ library OracleRequest {
         CodeLanguage language;
         // Source Code: CID for Location.IPFS, or raw source code for Location.Inline.
         string source;
-        // Arguments for the request
-        Argument[] args;
+        // Public Arguments for Request
+        bytes publicArgs;
+        // Private Arguments for Request
+        bytes privateArgs;
     }
 
     error EmptySource();
-    error EmptySecrets();
-    error EmptyArgs();
 
     /// @notice Encodes a Request to CBOR encoded bytes
     /// @param self The request to encode
@@ -56,14 +51,8 @@ library OracleRequest {
         buffer.writeString("source");
         buffer.writeString(self.source);
 
-        if (self.args.length > 0) {
-            buffer.writeString("args");
-            buffer.startArray();
-            for (uint256 i = 0; i < self.args.length; ++i) {
-                buffer.writeKVString(self.args[i].key, self.args[i].value);
-            }
-            buffer.endSequence();
-        }
+        buffer.writeKVBytes("publicArgs", self.publicArgs);
+        buffer.writeKVBytes("privateArgs", self.privateArgs);
 
         return buffer.buf.buf;
     }
@@ -95,9 +84,10 @@ library OracleRequest {
 
     /// @notice Sets args for the user run function
     /// @param self The initialized request
-    /// @param args The array of string args (must not be empty)
-    function _setArgs(Request memory self, Argument[] memory args) internal pure {
-        if (args.length == 0) revert EmptyArgs();
-        self.args = args;
+    /// @param publicArgs The public arguments
+    /// @param privateArgs The private arguments
+    function _setArgs(Request memory self, bytes memory publicArgs, bytes memory privateArgs) internal pure {
+        self.publicArgs = publicArgs;
+        self.privateArgs = privateArgs;
     }
 }

@@ -28,13 +28,15 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
      * @param subscriptionId Subscription ID
      * @param source Source code
      * @param location Location of the source code
-     * @param args List of arguments accessible from within the source code
+     * @param publicArgs Public arguments
+     * @param privateArgs Private arguments
      */
     function sendRequest(
         uint64 subscriptionId,
         string memory source,
         OracleRequest.Location location,
-        OracleRequest.Argument[] memory args,
+        bytes memory publicArgs,
+        bytes memory privateArgs,
         uint32 gasLimit
     ) external onlyOwner returns (bytes32 requestId) {
         OracleRequest.Request memory req;
@@ -43,7 +45,7 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         } else {
             req._initializeRequest(location, OracleRequest.CodeLanguage.JavaScript, source);
         }
-        if (args.length > 0) req._setArgs(args);
+        req._setArgs(publicArgs, privateArgs);
         s_lastRequestId = _sendRequest(req._encodeCBOR(), subscriptionId, gasLimit);
         return s_lastRequestId;
     }

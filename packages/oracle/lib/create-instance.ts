@@ -6,7 +6,6 @@ export async function createFheInstance(
   contractAddress: string,
   signer: HardhatEthersSigner
 ) {
-  const provider = hre.ethers.provider;
   const instance = hre.fhenixjs;
 
   const permit = await instance.generatePermit(

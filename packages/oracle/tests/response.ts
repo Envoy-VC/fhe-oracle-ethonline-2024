@@ -40,13 +40,7 @@ describe('Oracle Response', () => {
     const { router, otherAccount, consumer } = state;
     const res = await consumer
       .connect(otherAccount)
-      .sendRequest(
-        subscriptionId,
-        '123',
-        1,
-        [{ key: 'name', value: 'John' }],
-        '30000000'
-      );
+      .sendRequest(subscriptionId, '123', 1, '0x', '0x', '30000000');
     await res.wait();
     const event = (
       await router.queryFilter(router.filters.RequestStart, -1)

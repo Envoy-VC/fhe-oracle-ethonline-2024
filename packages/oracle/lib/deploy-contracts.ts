@@ -55,7 +55,7 @@ export const deploy = async (): Promise<FHEOracleState> => {
   await consumer.waitForDeployment();
 
   // Add Transmitter
-  const tx = await coordinator.addOracle(owner.address);
+  const tx = await coordinator.addOracleNode(owner.address);
   await tx.wait();
 
   return {

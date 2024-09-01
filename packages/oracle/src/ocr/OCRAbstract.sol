@@ -29,8 +29,9 @@ abstract contract OCRAbstract is ITypeAndVersion {
      */
     function setConfig(OCRConfig memory config) external virtual;
 
-    function addOracle(address transmitter) external virtual;
-    function removeOracle(address transmitter) external virtual;
+    function addOracleNode(address transmitter) external virtual;
+    function removeOracleNode(address transmitter) external virtual;
+    function isOracle(address transmitter) external virtual returns (bool);
 
     /**
      * @notice information about current offchain reporting protocol configuration

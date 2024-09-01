@@ -92,14 +92,18 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
     // |                      Oracle Transmitters                        |
     // ===================================================================
 
-    function addOracle(address transmitter) public override {
+    function addOracleNode(address transmitter) public override {
         _onlyOwner();
         _addOracle(transmitter);
     }
 
-    function removeOracle(address transmitter) public override {
+    function removeOracleNode(address transmitter) public override {
         _onlyOwner();
         _addOracle(transmitter);
+    }
+
+    function isOracle(address transmitter) public view override returns (bool) {
+        return _isOracle(transmitter);
     }
 
     // ===================================================================
