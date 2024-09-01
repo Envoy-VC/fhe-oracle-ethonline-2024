@@ -10,6 +10,7 @@ export const AddConsumer = () => {
 
   const onAdd = () => {
     // TODO: Call contract to create a subscription
+    // 0xe86b1899376c77e1a109ea2124e462ef58e56897
   };
   return (
     <div className='flex flex-col gap-2'>

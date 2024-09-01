@@ -38,6 +38,7 @@
     "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
+    "serialize-error": "^11.0.3",
     "shiki": "^1.15.2",
     "sonner": "^1.5.0",
     "superjson": "^2.2.1",

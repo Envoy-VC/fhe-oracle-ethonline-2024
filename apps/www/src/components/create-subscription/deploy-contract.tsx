@@ -1,16 +1,19 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 
-import { consumerAbi, consumerByteCode } from '~/lib/code';
+import { consumerByteCode } from '~/lib/code';
 import { errorHandler } from '~/lib/utils';
+import { consumerAbi } from '~/lib/viem/abi';
 
 import { toast } from 'sonner';
 import {
   useAccount,
+  useChainId,
   useDeployContract,
   useWaitForTransactionReceipt,
 } from 'wagmi';
+import { env } from '~/env';
 
 import { Button } from '../ui/button';
 import { TextCopy, TextCopyButton, TextCopyContent } from '../ui/text-copy';
@@ -18,6 +21,7 @@ import { TextCopy, TextCopyButton, TextCopyContent } from '../ui/text-copy';
 export const DeployContract = () => {
   const { address } = useAccount();
   const { deployContractAsync, isPending, data } = useDeployContract();
+  const chainId = useChainId();
 
   const result = useWaitForTransactionReceipt({
     hash: data,
@@ -28,10 +32,18 @@ export const DeployContract = () => {
       if (!address) {
         throw new Error('No account found');
       }
-      const res = await deployContractAsync({
+
+      console.log(env.NEXT_PUBLIC_LOCALFHENIX_ROUTER_ADDRESS);
+
+      const router =
+        chainId === 412346
+          ? env.NEXT_PUBLIC_LOCALFHENIX_ROUTER_ADDRESS
+          : env.NEXT_PUBLIC_FHENIX_HELIUM_ROUTER_ADDRESS;
+
+      await deployContractAsync({
         bytecode: consumerByteCode,
         abi: consumerAbi,
-        args: ['0x49297bbf75740C8BEB93F7d19520De05514072A9'],
+        args: [router as `0x${string}`],
       });
     } catch (error) {
       const message = errorHandler(error);
