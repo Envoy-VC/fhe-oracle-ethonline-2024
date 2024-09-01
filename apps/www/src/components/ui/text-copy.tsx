@@ -25,7 +25,7 @@ import {
 } from 'lucide-react';
 
 const TextCopyContext = createContext<{
-  content?: string;
+  text?: string;
   type?: 'text' | 'password';
   truncateOptions?: {
     enabled?: boolean;
@@ -35,7 +35,7 @@ const TextCopyContext = createContext<{
   hidden: boolean;
   setHidden: (value: boolean) => void;
 }>({
-  content: '',
+  text: '',
   hidden: false,
   type: 'text',
   truncateOptions: {
@@ -49,7 +49,7 @@ const TextCopyContext = createContext<{
 });
 
 interface TextCopyProps extends ComponentProps<'div'> {
-  content?: string;
+  text?: string;
   type?: 'text' | 'password';
   truncateOptions?: {
     enabled?: boolean;
@@ -70,14 +70,14 @@ interface TextCopyButtonProps extends ButtonProps {
 }
 
 export const TextCopy = forwardRef<HTMLDivElement, TextCopyProps>(
-  ({ children, className, content, type, truncateOptions, ...props }, ref) => {
+  ({ children, className, text, type, truncateOptions, ...props }, ref) => {
     const [hidden, setHidden] = useState<boolean>(false);
     return (
       <TextCopyContext.Provider
         value={{
           hidden,
           setHidden,
-          content,
+          text,
           type,
           truncateOptions,
         }}
@@ -96,19 +96,26 @@ export const TextCopy = forwardRef<HTMLDivElement, TextCopyProps>(
 
 export const TextCopyContent = forwardRef<HTMLDivElement, TextCopyContentProps>(
   ({ className, ...props }, ref) => {
-    const { hidden, type, truncateOptions, content } =
-      useContext(TextCopyContext);
+    const { hidden, type, truncateOptions, text } = useContext(TextCopyContext);
     return (
       <div className={cn('font-medium', className)} {...props} ref={ref}>
         {type === 'text'
           ? truncateOptions?.enabled
-            ? truncate(content ?? '', length, truncateOptions.fromMiddle)
-            : content
+            ? truncate(
+                text ?? '',
+                truncateOptions.length,
+                truncateOptions.fromMiddle
+              )
+            : text
           : hidden
             ? '*'.repeat(24)
             : truncateOptions?.enabled
-              ? truncate(content ?? '', length, truncateOptions.fromMiddle)
-              : content}
+              ? truncate(
+                  text ?? '',
+                  truncateOptions.length,
+                  truncateOptions.fromMiddle
+                )
+              : text}
       </div>
     );
   }
@@ -135,13 +142,13 @@ export const TextCopyButton = forwardRef<
   HTMLButtonElement,
   TextCopyButtonProps
 >(({ iconProps = { strokeWidth: 2.5 }, canCopy = true, ...props }, ref) => {
-  const { content } = useContext(TextCopyContext);
+  const { text } = useContext(TextCopyContext);
   const [, copy] = useCopyToClipboard();
   const [copied, setCopied] = useState<boolean>(false);
 
   const copyText = async () => {
     try {
-      await copy(content ?? '');
+      await copy(text ?? '');
       setCopied(true);
     } catch (error) {
       errorHandler(error);

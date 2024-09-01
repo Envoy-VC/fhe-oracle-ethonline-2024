@@ -5,9 +5,10 @@ import {
   createStorage,
   http,
 } from 'wagmi';
-import { anvil, mainnet, sepolia } from 'wagmi/chains';
 import { walletConnect } from 'wagmi/connectors';
 import { env } from '~/env';
+
+import { fhenixHelium, localFhenix } from './chains';
 
 export const projectId = env.NEXT_PUBLIC_WALLETCONNECT_ID;
 
@@ -19,15 +20,14 @@ const metadata = {
 };
 
 export const wagmiConfig: Config = createConfig({
-  chains: [mainnet, sepolia, anvil],
+  chains: [localFhenix, fhenixHelium],
   ssr: true,
   storage: createStorage({
     storage: cookieStorage,
   }),
   connectors: [walletConnect({ projectId, metadata, showQrModal: false })],
   transports: {
-    [mainnet.id]: http(),
-    [sepolia.id]: http(),
-    [anvil.id]: http(),
+    [localFhenix.id]: http(),
+    [fhenixHelium.id]: http(),
   },
 });

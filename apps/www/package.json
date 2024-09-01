@@ -11,6 +11,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@dotenvx/dotenvx": "^1.12.1",
     "@lit-protocol/auth-helpers": "^6.4.10",
     "@lit-protocol/constants": "^6.4.10",
     "@lit-protocol/lit-node-client-nodejs": "^6.4.10",

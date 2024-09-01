@@ -14,6 +14,10 @@ createWeb3Modal({
   enableAnalytics: true,
   enableOnramp: true,
   themeMode: 'light',
+  chainImages: {
+    8008135: 'https://docs.fhenix.zone/img/logo-black.svg',
+    412346: 'https://docs.fhenix.zone/img/logo-black.svg',
+  },
 });
 
 const queryClient = new QueryClient();

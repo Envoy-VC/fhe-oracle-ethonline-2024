@@ -5,14 +5,23 @@ import React, { useState } from 'react';
 import { consumerAbi, consumerByteCode } from '~/lib/code';
 import { errorHandler } from '~/lib/utils';
 
-import { useAccount, useDeployContract } from 'wagmi';
+import { toast } from 'sonner';
+import {
+  useAccount,
+  useDeployContract,
+  useWaitForTransactionReceipt,
+} from 'wagmi';
 
 import { Button } from '../ui/button';
+import { TextCopy, TextCopyButton, TextCopyContent } from '../ui/text-copy';
 
 export const DeployContract = () => {
-  const [consumerAddress, setConsumerAddress] = useState<string | null>(null);
   const { address } = useAccount();
-  const { deployContractAsync, isPending } = useDeployContract();
+  const { deployContractAsync, isPending, data } = useDeployContract();
+
+  const result = useWaitForTransactionReceipt({
+    hash: data,
+  });
 
   const onDeploy = async () => {
     try {
@@ -24,9 +33,9 @@ export const DeployContract = () => {
         abi: consumerAbi,
         args: ['0x49297bbf75740C8BEB93F7d19520De05514072A9'],
       });
-      setConsumerAddress(res);
     } catch (error) {
-      errorHandler(error);
+      const message = errorHandler(error);
+      toast.error(message);
     }
   };
   return (
@@ -41,8 +50,18 @@ export const DeployContract = () => {
       >
         {isPending ? 'Deploying...' : 'Deploy Consumer Contract'}
       </Button>
-      {consumerAddress ? (
-        <span className='font-medium'>Consumer Address: {consumerAddress}</span>
+      {result.data?.contractAddress ? (
+        <span className='flex items-center gap-2 font-medium'>
+          Consumer Address:
+          <TextCopy
+            text={result.data.contractAddress}
+            truncateOptions={{ enabled: true, length: 20, fromMiddle: true }}
+            type='text'
+          >
+            <TextCopyContent />
+            <TextCopyButton />
+          </TextCopy>
+        </span>
       ) : null}
     </div>
   );
