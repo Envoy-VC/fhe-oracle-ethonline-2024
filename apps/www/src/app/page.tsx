@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 
 import { Architecture, Faq, Features, FloatingDock, Hero } from '~/components';
