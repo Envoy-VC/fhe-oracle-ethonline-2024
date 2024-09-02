@@ -36,6 +36,7 @@ const func: DeployFunction = async function () {
       },
     ],
     skipIfAlreadyDeployed: false,
+    // deterministicDeployment: true,
   });
 
   const coordinator = await deploy('OracleCoordinator', {
@@ -46,6 +47,7 @@ const func: DeployFunction = async function () {
       { requestTimeoutSeconds: BigInt(5 * 50) },
     ],
     skipIfAlreadyDeployed: false,
+    // deterministicDeployment: true,
   });
 
   const routerContract = await ethers.getContractAt(
@@ -60,6 +62,7 @@ const func: DeployFunction = async function () {
     from: otherAccount.address,
     args: [router.address],
     skipIfAlreadyDeployed: false,
+    // deterministicDeployment: true,
   });
 
   const contract = await ethers.getContractAt(
@@ -80,6 +83,10 @@ const func: DeployFunction = async function () {
   };
 
   const data = readFileSync(path, { encoding: 'utf8' });
+
+  console.log('Router Address: ', router.address);
+  console.log('Coordinator Address: ', coordinator.address);
+  console.log('Consumer Address: ', consumer.address);
 
   const parsed = dotenv.parse(data);
   let updated = '';

@@ -12,10 +12,7 @@ export default async function handler(
   const body = req.body as {
     data: string;
   };
-  const provider = new ethers.providers.JsonRpcProvider({
-    skipFetchSetup: true,
-    url: LIT_RPC.CHRONICLE_YELLOWSTONE,
-  });
+  const provider = new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE);
 
   const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
 

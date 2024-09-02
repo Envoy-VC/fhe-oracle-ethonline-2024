@@ -3,18 +3,25 @@
 import React, { useState } from 'react';
 
 import {
+  decodeData,
   encodeData,
+  fulfillRequest,
   getEncryptedData,
+  getPermission,
   getRequestEventLogs,
+  getRequestStartLogs,
+  parseJson,
+  unsealValue,
 } from '~/lib/helpers';
+import { useEthers } from '~/lib/hooks';
 import { errorHandler } from '~/lib/utils';
 import { wagmiConfig } from '~/lib/viem';
 import { consumerAbi } from '~/lib/viem/abi';
 
 import { readContract, waitForTransactionReceipt } from '@wagmi/core';
+import { ethers } from 'ethers';
 import { toast } from 'sonner';
-import { createThirdwebClient } from 'thirdweb';
-import { upload } from 'thirdweb/storage';
+import { toHex } from 'viem';
 import { useAccount, useChainId, useWriteContract } from 'wagmi';
 import { CodeLocation } from '~/types';
 
@@ -34,6 +41,7 @@ export const CreateRequest = ({ append }: BaseProps) => {
   const { address } = useAccount();
   const chainId = useChainId();
   const { writeContractAsync, isPending } = useWriteContract();
+  const { signer, provider } = useEthers({ chainId });
 
   const onAdd = async () => {
     try {
@@ -63,11 +71,55 @@ export const CreateRequest = ({ append }: BaseProps) => {
         abi: consumerAbi,
         address: consumerAddress as `0x${string}`,
         functionName: 'sendRequest',
-        args: [id, source, codeLocation, publicArgs, privateArgs, 300000],
+        args: [id, source, codeLocation, publicArgs, privateArgs, 30000000],
       });
 
-      const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
+      await waitForTransactionReceipt(wagmiConfig, { hash });
       const logs = await getRequestEventLogs({ chainId });
+      const dataLogs = await getRequestStartLogs({ chainId });
+
+      if (!logs.args.commitment) {
+        throw new Error('No commitment found');
+      }
+
+      const commitment = ethers.AbiCoder.defaultAbiCoder().encode(
+        ['bytes32', 'address', 'address', 'uint64', 'uint32', 'uint32'],
+        [
+          logs.args.commitment.requestId,
+          logs.args.commitment.coordinator,
+          logs.args.commitment.client,
+          logs.args.commitment.subscriptionId,
+          logs.args.commitment.callbackGasLimit,
+          logs.args.commitment.timeoutTimestamp,
+        ]
+      );
+      const data = parseJson(decodeData(dataLogs.args.data ?? ''), {}) as {
+        language: bigint;
+        codeLocation: bigint;
+        source: string;
+        publicArgs: Uint8Array;
+        privateArgs: Uint8Array;
+      };
+
+      const publicParams = decodeData(toHex(data.publicArgs))[0] as object;
+      const privateParams = decodeData(toHex(data.privateArgs))[0] as object;
+
+      console.log({
+        publicParams,
+        privateParams,
+      });
+
+      const res = await fulfillRequest({
+        chainId,
+        language: Number(data.language),
+        codeLocation: Number(data.codeLocation),
+        source: data.source,
+        publicArgs: publicParams,
+        privateArgs: privateParams,
+        commitment,
+        requestId: logs.args.commitment.requestId,
+      });
+      console.log(res);
     } catch (error) {
       toast.error(errorHandler(error));
     }
@@ -120,6 +172,7 @@ export const CreateRequest = ({ append }: BaseProps) => {
       >
         Request Data
       </Button>
+
       <Button
         className='h-12 text-base'
         disabled={!consumerAddress}
@@ -128,7 +181,7 @@ export const CreateRequest = ({ append }: BaseProps) => {
         onClick={async () => {
           const res = await readContract(wagmiConfig, {
             abi: consumerAbi,
-            address: consumerAddress,
+            address: consumerAddress as `0x${string}`,
             functionName: 's_lastRequestId',
           });
           console.log(res);
@@ -144,8 +197,8 @@ export const CreateRequest = ({ append }: BaseProps) => {
         onClick={async () => {
           const res = await readContract(wagmiConfig, {
             abi: consumerAbi,
-            address: consumerAddress,
-            functionName: 's_lastResponse',
+            address: consumerAddress as `0x${string}`,
+            functionName: 'lastResponse',
           });
           console.log(res);
         }}
@@ -154,13 +207,49 @@ export const CreateRequest = ({ append }: BaseProps) => {
       </Button>
       <Button
         className='h-12 text-base'
-        // disabled={isPending || !subscriptionId || !consumerAddress}
+        disabled={isPending || !consumerAddress}
         size='primary'
         variant='primary'
+        onClick={async () => {
+          try {
+            if (!signer || !provider) {
+              throw new Error('No signer or provider found');
+            }
+            if (!address) {
+              throw new Error('No account found');
+            }
+            const permission = await getPermission({
+              chainId,
+              address,
+              contractAddress: consumerAddress,
+              signer,
+              provider,
+            });
+
+            const sealedValue = await readContract(wagmiConfig, {
+              abi: consumerAbi,
+              address: consumerAddress as `0x${string}`,
+              functionName: 'getLastResponse',
+              args: [permission],
+            });
+
+            console.log(sealedValue);
+
+            const unsealed = unsealValue({
+              chainId,
+              contractAddress: consumerAddress,
+              data: sealedValue,
+            });
+
+            console.log(unsealed);
+          } catch (error) {
+            toast.error(errorHandler(error));
+          }
+        }}
       >
         Unseal Last Response
       </Button>
-      <Button
+      {/* <Button
         onClick={() => {
           const client = createThirdwebClient({
             clientId: '',
@@ -169,7 +258,7 @@ export const CreateRequest = ({ append }: BaseProps) => {
         }}
       >
         Upload
-      </Button>
+      </Button> */}
     </div>
   );
 };
