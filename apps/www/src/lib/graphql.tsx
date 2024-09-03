@@ -42,7 +42,6 @@ export const getAllRequests = async ({ chainId }: BaseProps) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-hasura-admin-secret': 'testing',
     },
     body: JSON.stringify({ query }),
   });
@@ -99,7 +98,6 @@ export const getAllProcessedRequests = async ({ chainId }: BaseProps) => {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-hasura-admin-secret': 'testing',
     },
     body: JSON.stringify({ query }),
   });
