@@ -21,8 +21,10 @@ const func: DeployFunction = async function () {
   }
 
   console.log('Deploying with  Address: ', owner.address);
-  await hre.fhenixjs.getFunds(owner.address);
-  await hre.fhenixjs.getFunds(otherAccount.address);
+  if (hre.network.name === 'localfhenix') {
+    await hre.fhenixjs.getFunds(owner.address);
+    await hre.fhenixjs.getFunds(otherAccount.address);
+  }
 
   const router = await deploy('OracleRouter', {
     from: owner.address,
@@ -99,3 +101,10 @@ const func: DeployFunction = async function () {
 
 export default func;
 func.id = 'deploy_contracts';
+
+/**
+ * Deploying with  Address:  0xD9153821aF6e910eE43D92f6FD7a610B67D5Df3F
+Router Address:  0xbd533524e6f709AE55Bc7686C3e416D6870D1259
+Coordinator Address:  0x1EA3bce6a8a08d8c08859Fe720024f98FeB11C4E
+Consumer Address:  0x394403eE9b3b5e25D492Ad2FD4cc0836D8e75B52
+ */

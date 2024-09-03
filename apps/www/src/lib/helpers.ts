@@ -9,9 +9,10 @@ import { fhenixHelium, localFhenix } from './viem/chains';
 export const getEncryptedData = async (
   name: string,
   value: string,
-  actionIpfsId: string
+  _actionIpfsId: string
 ) => {
   const data = JSON.stringify({ [name]: value });
+  // 0xD9153821aF6e910eE43D92f6FD7a610B67D5Df3F
 
   const accessControlConditions = [
     {
@@ -19,10 +20,10 @@ export const getEncryptedData = async (
       standardContractType: '',
       chain: 'ethereum',
       method: '',
-      parameters: [':currentActionIpfsId'],
+      parameters: [':userAddress'],
       returnValueTest: {
         comparator: '=',
-        value: actionIpfsId,
+        value: '0xD9153821aF6e910eE43D92f6FD7a610B67D5Df3F',
       },
     },
   ];

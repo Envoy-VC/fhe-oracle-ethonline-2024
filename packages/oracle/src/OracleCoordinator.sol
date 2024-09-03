@@ -68,14 +68,14 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
     // |                        Configuration                         |
     // ================================================================
 
-    /// @notice Gets the Chainlink Coordinator's billing configuration
-    /// @return config
+    /// @notice Gets the Oracle Coordinator configuration
+    /// @return config Coordinator configuration
     function getConfig() external view returns (OracleConfig memory) {
         return s_config;
     }
 
-    /// @notice Sets the Chainlink Coordinator's billing configuration
-    /// @param config - See the contents of the FunctionsBillingConfig struct in IFunctionsBilling.sol for more information
+    /// @notice Sets the Oracle Coordinator configuration
+    /// @param config The new configuration
     function updateConfig(OracleConfig memory config) public {
         _onlyOwner();
 
@@ -257,7 +257,7 @@ contract OracleCoordinator is IOracleCoordinator, OCRBase, Routable, ConfirmedOw
 
     /// @inheritdoc IOracleCoordinator
     /// @dev Only callable by the Router
-    /// @dev Used by FunctionsRouter.sol during timeout of a request
+    /// @dev Used by OracleConfigRouter.sol during timeout of a request
     function deleteCommitment(bytes32 requestId) external override onlyRouter {
         // Delete commitment
         delete s_requestCommitments[requestId];

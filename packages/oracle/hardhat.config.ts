@@ -8,6 +8,7 @@ import 'fhenix-hardhat-plugin';
 import 'fhenix-hardhat-docker';
 import 'solidity-coverage';
 import '@nomiclabs/hardhat-solhint';
+import '@nomicfoundation/hardhat-verify';
 import 'solidity-docgen';
 import 'hardhat-deploy';
 import './tasks';
@@ -28,7 +29,10 @@ const config: HardhatUserConfig = {
     fhenixHelium: {
       url: 'https://api.helium.fhenix.zone',
       chainId: 8008135,
-      accounts: PRIVATE_KEY ? [PRIVATE_KEY] : { mnemonic: MNEMONIC },
+      accounts: [
+        process.env.PRIVATE_KEY_OWNER!,
+        process.env.PRIVATE_KEY_OTHER!,
+      ],
     },
     localfhenix: {
       gas: 'auto',
@@ -42,6 +46,22 @@ const config: HardhatUserConfig = {
         process.env.PRIVATE_KEY_OTHER!,
       ],
     },
+  },
+  etherscan: {
+    apiKey: {
+      // Is not required by blockscout. Can be any non-empty string
+      fhenixHelium: 'abc',
+    },
+    customChains: [
+      {
+        network: 'fhenixHelium',
+        chainId: 8008135,
+        urls: {
+          apiURL: 'https://explorer.helium.fhenix.zone/api',
+          browserURL: 'https://explorer.helium.fhenix.zone//',
+        },
+      },
+    ],
   },
   docgen: {
     outputDir: 'docs',

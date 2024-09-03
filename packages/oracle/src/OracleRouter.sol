@@ -348,7 +348,7 @@ contract OracleRouter is IOracleRouter, OracleSubscriptions, Pausable, ITypeAndV
         _unpause();
     }
 
-    /// @dev Used within FunctionsSubscriptions.sol
+    /// @dev Used within OracleSubscriptions.sol
     function _onlyRouterOwner() internal view override {
         _validateOwnership();
     }

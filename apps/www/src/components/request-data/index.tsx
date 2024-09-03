@@ -26,6 +26,10 @@ export const RequestData = () => {
       <div className='text-2xl font-medium sm:text-3xl md:text-4xl'>
         Request Data (Weather API Example)
       </div>
+      <div>
+        Fhenix Helium Consumer Address:
+        0x394403eE9b3b5e25D492Ad2FD4cc0836D8e75B52
+      </div>
       <div className='flex w-full flex-col gap-6 md:flex-row'>
         <div className='flex w-full basis-1/3 flex-col gap-6 md:flex-row'>
           <CreateRequest append={append} />

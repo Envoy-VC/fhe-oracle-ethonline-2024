@@ -17,8 +17,8 @@ interface IOracleRouter {
 
     /// @notice Fulfill the request by calling back the data that the Oracle returned to the client contract
     /// @dev Only callable by the Coordinator contract that is saved in the commitment
-    /// @param response response data from DON consensus
-    /// @param err error from DON consensus
+    /// @param response response data from Oracle
+    /// @param err error from Oracle
     /// @param transmitter - The Node that transmitted the OCR report
     /// @param commitment - The parameters of the request that must be held consistent between request and response time
     /// @return fulfillResult - The result of the fulfillment

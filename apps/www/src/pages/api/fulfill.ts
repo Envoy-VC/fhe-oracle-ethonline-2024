@@ -76,15 +76,33 @@ export default async function handler(
     },
   });
 
-  const litActionCode = body.source;
+  // const litActionCode = body.source;
 
-  const codeLocation =
-    Number(body.codeLocation) === 0
-      ? { code: litActionCode }
-      : { ipfsId: litActionCode };
+  // const codeLocation =
+  //   Number(body.codeLocation) === 0
+  //     ? { code: litActionCode }
+  //     : { ipfsId: litActionCode };
 
   const response = await client.executeJs({
-    ...codeLocation,
+    // ...codeLocation,
+    code: `const fetchWeatherApiResponse = async () => {
+  const resp = await Lit.Actions.decryptAndCombine({
+    accessControlConditions,
+    ciphertext,
+    dataToEncryptHash,
+    authSig: null,
+    chain: 'ethereum',
+  });
+
+  const apiKey = JSON.parse(resp).apiKey;
+  const url = 'https://api.weatherapi.com/v1/current.json?key=' + apiKey + '&q=' + city;
+
+  const data = await fetch(url).then((response) => response.json());
+  const temp = String(parseInt(data.current.temp_c));
+  Lit.Actions.setResponse({ response: temp });
+};
+
+fetchWeatherApiResponse();`,
     sessionSigs: sessionSignatures,
     jsParams: {
       ...body.publicArgs,
@@ -101,6 +119,7 @@ export default async function handler(
     body.chainId === localFhenix.id
       ? env.NEXT_PUBLIC_LOCALFHENIX_COORDINATOR_ADDRESS
       : env.NEXT_PUBLIC_FHENIX_HELIUM_COORDINATOR_ADDRESS;
+
   const fhenixProvider = new ethers.JsonRpcProvider(
     body.chainId === localFhenix.id
       ? localFhenix.rpcUrls.default.http[0]
@@ -148,7 +167,7 @@ export default async function handler(
     .connect(transmitter)
     // @ts-expect-error -- safe to ignore
     .transmit(signers, report, reportHash, [r], [s], [v], {
-      gasLimit: 1e8,
+      gasLimit: body.chainId === localFhenix.id ? 1e8 : 1e9,
     });
 
   res.status(200).json({

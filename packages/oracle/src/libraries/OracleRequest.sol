@@ -74,7 +74,7 @@ library OracleRequest {
         self.source = source;
     }
 
-    /// @notice Initializes a Chainlink Functions Request
+    /// @notice Initializes a Oracle Request
     /// @dev Simplified version of initializeRequest for PoC
     /// @param self The uninitialized request
     /// @param javaScriptSource The user provided JS code (must not be empty)
