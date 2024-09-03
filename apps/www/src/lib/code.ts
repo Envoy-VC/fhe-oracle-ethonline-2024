@@ -39,7 +39,7 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         bytes memory publicArgs,
         bytes memory privateArgs,
         uint32 gasLimit
-    ) external onlyOwner returns (bytes32 requestId) {
+    ) external returns (bytes32 requestId) {
         OracleRequest.Request memory req;
         if (location == OracleRequest.Location.Inline) {
             req._initializeRequestForInlineJavaScript(source);
@@ -60,7 +60,6 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
      */
     function sendRequestCBOR(bytes memory request, uint64 subscriptionId, uint32 gasLimit)
         external
-        onlyOwner
         returns (bytes32 requestId)
     {
         s_lastRequestId = _sendRequest(request, subscriptionId, gasLimit);
