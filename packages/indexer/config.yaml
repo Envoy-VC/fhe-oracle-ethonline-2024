@@ -1,0 +1,31 @@
+# yaml-language-server: $schema=./node_modules/envio/evm.schema.json
+name: fhe-oracle-indexer
+networks:
+  - id: 8008135
+    rpc_config:
+      url: https://api.helium.fhenix.zone
+    start_block: 230000
+    contracts:
+      - name: OracleCoordinator
+        address:
+          - 0x1EA3bce6a8a08d8c08859Fe720024f98FeB11C4E
+        handler: src/EventHandlers.ts
+        events:
+          - event: OracleAdded(address transmitter)
+          - event: OracleRemoved(address transmitter)
+          - event: RequestSent(bytes32 indexed requestId, address indexed requestingContract, address requestInitiator, uint64 subscriptionId, address subscriptionOwner, bytes data, uint64 callbackGasLimit, (bytes32,address,address,uint64,uint32,uint32) commitment)
+          - event: ResponseReceived(bytes32 indexed requestId, address transmitter)
+      - name: OracleRouter
+        address:
+          - 0xbd533524e6f709AE55Bc7686C3e416D6870D1259
+        handler: src/EventHandlers.ts
+        events:
+          - event: RequestNotProcessed(bytes32 indexed requestId, address coordinator, address transmitter, uint8 resultCode)
+          - event: RequestProcessed(bytes32 indexed requestId, uint64 indexed subscriptionId, address transmitter, uint8 resultCode, bytes response, bytes err, bytes callbackReturnData)
+          - event: RequestStart(bytes32 indexed requestId, uint64 indexed subscriptionId, address subscriptionOwner, address requestingContract, address requestInitiator, bytes data, uint32 callbackGasLimit)
+          - event: RequestTimedOut(bytes32 indexed requestId)
+          - event: SubscriptionCanceled(uint64 indexed subscriptionId)
+          - event: SubscriptionConsumerAdded(uint64 indexed subscriptionId, address consumer)
+          - event: SubscriptionConsumerRemoved(uint64 indexed subscriptionId, address consumer)
+          - event: SubscriptionCreated(uint64 indexed subscriptionId, address owner)
+          - event: SubscriptionOwnerTransferred(uint64 indexed subscriptionId, address from, address to)

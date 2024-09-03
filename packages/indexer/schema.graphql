@@ -1,0 +1,98 @@
+type OracleCoordinator_OracleAdded {
+  id: ID!
+  transmitter: String!
+}
+
+type OracleCoordinator_OracleRemoved {
+  id: ID!
+  transmitter: String!
+}
+
+type OracleCoordinator_RequestSent {
+  id: ID!
+  requestId: String!
+  requestingContract: String!
+  requestInitiator: String!
+  subscriptionId: BigInt!
+  subscriptionOwner: String!
+  data: String!
+  callbackGasLimit: BigInt!
+  commitment_0: String!
+  commitment_1: String!
+  commitment_2: String!
+  commitment_3: BigInt!
+  commitment_4: BigInt!
+  commitment_5: BigInt!
+}
+
+type OracleCoordinator_ResponseReceived {
+  id: ID!
+  requestId: String!
+  transmitter: String!
+}
+
+type OracleRouter_RequestNotProcessed {
+  id: ID!
+  requestId: String!
+  coordinator: String!
+  transmitter: String!
+  resultCode: BigInt!
+}
+
+type OracleRouter_RequestProcessed {
+  id: ID!
+  requestId: String!
+  subscriptionId: BigInt!
+  transmitter: String!
+  resultCode: BigInt!
+  response: String!
+  err: String!
+  callbackReturnData: String!
+}
+
+type OracleRouter_RequestStart {
+  id: ID!
+  requestId: String!
+  subscriptionId: BigInt!
+  subscriptionOwner: String!
+  requestingContract: String!
+  requestInitiator: String!
+  data: String!
+  callbackGasLimit: BigInt!
+}
+
+type OracleRouter_RequestTimedOut {
+  id: ID!
+  requestId: String!
+}
+
+type OracleRouter_SubscriptionCanceled {
+  id: ID!
+  subscriptionId: BigInt!
+}
+
+type OracleRouter_SubscriptionConsumerAdded {
+  id: ID!
+  subscriptionId: BigInt!
+  consumer: String!
+}
+
+type OracleRouter_SubscriptionConsumerRemoved {
+  id: ID!
+  subscriptionId: BigInt!
+  consumer: String!
+}
+
+type OracleRouter_SubscriptionCreated {
+  id: ID!
+  subscriptionId: BigInt!
+  owner: String!
+}
+
+type OracleRouter_SubscriptionOwnerTransferred {
+  id: ID!
+  subscriptionId: BigInt!
+  from: String!
+  to: String!
+}
+
