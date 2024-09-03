@@ -1,18 +1,15 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { consumerByteCode } from '~/lib/code';
 import { errorHandler } from '~/lib/utils';
+import { wagmiConfig } from '~/lib/viem';
 import { consumerAbi } from '~/lib/viem/abi';
 
+import { waitForTransactionReceipt } from '@wagmi/core';
 import { toast } from 'sonner';
-import {
-  useAccount,
-  useChainId,
-  useDeployContract,
-  useWaitForTransactionReceipt,
-} from 'wagmi';
+import { useAccount, useChainId, useDeployContract } from 'wagmi';
 import { env } from '~/env';
 
 import { Button } from '../ui/button';
@@ -20,12 +17,10 @@ import { TextCopy, TextCopyButton, TextCopyContent } from '../ui/text-copy';
 
 export const DeployContract = () => {
   const { address } = useAccount();
-  const { deployContractAsync, isPending, data } = useDeployContract();
+  const { deployContractAsync, isPending } = useDeployContract();
   const chainId = useChainId();
 
-  const result = useWaitForTransactionReceipt({
-    hash: data,
-  });
+  const [consumerAddress, setConsumerAddress] = useState<string | null>(null);
 
   const onDeploy = async () => {
     try {
@@ -33,18 +28,18 @@ export const DeployContract = () => {
         throw new Error('No account found');
       }
 
-      console.log(env.NEXT_PUBLIC_LOCALFHENIX_ROUTER_ADDRESS);
-
       const router =
         chainId === 412346
           ? env.NEXT_PUBLIC_LOCALFHENIX_ROUTER_ADDRESS
           : env.NEXT_PUBLIC_FHENIX_HELIUM_ROUTER_ADDRESS;
 
-      await deployContractAsync({
+      const hash = await deployContractAsync({
         bytecode: consumerByteCode,
         abi: consumerAbi,
         args: [router as `0x${string}`],
       });
+      const receipt = await waitForTransactionReceipt(wagmiConfig, { hash });
+      setConsumerAddress(receipt.contractAddress ?? null);
     } catch (error) {
       const message = errorHandler(error);
       toast.error(message);
@@ -62,11 +57,11 @@ export const DeployContract = () => {
       >
         {isPending ? 'Deploying...' : 'Deploy Consumer Contract'}
       </Button>
-      {result.data?.contractAddress ? (
+      {consumerAddress ? (
         <span className='flex items-center gap-2 font-medium'>
           Consumer Address:
           <TextCopy
-            text={result.data.contractAddress}
+            text={consumerAddress}
             truncateOptions={{ enabled: true, length: 20, fromMiddle: true }}
             type='text'
           >

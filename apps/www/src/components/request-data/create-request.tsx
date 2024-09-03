@@ -7,19 +7,18 @@ import {
   encodeData,
   fulfillRequest,
   getEncryptedData,
-  getPermission,
   getRequestEventLogs,
   getRequestStartLogs,
   parseJson,
-  unsealValue,
 } from '~/lib/helpers';
-import { useEthers } from '~/lib/hooks';
+import { useEthers, usePermission } from '~/lib/hooks';
 import { errorHandler } from '~/lib/utils';
 import { wagmiConfig } from '~/lib/viem';
 import { consumerAbi } from '~/lib/viem/abi';
 
 import { readContract, waitForTransactionReceipt } from '@wagmi/core';
 import { ethers } from 'ethers';
+import { SealingKey } from 'fhenixjs';
 import { toast } from 'sonner';
 import { toHex } from 'viem';
 import { useAccount, useChainId, useWriteContract } from 'wagmi';
@@ -40,10 +39,13 @@ export const CreateRequest = ({ append }: BaseProps) => {
 
   const { address } = useAccount();
   const chainId = useChainId();
-  const { writeContractAsync, isPending } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const { signer, provider } = useEthers({ chainId });
+  const { getPermit } = usePermission();
 
-  const onAdd = async () => {
+  const [isRequesting, setIsRequesting] = useState<boolean>(false);
+
+  const onRequest = async () => {
     try {
       if (!address) {
         throw new Error('No account found');
@@ -61,11 +63,25 @@ export const CreateRequest = ({ append }: BaseProps) => {
         throw new Error('Subscription Id is required');
       }
 
+      setIsRequesting(true);
+
       const id = BigInt(subscriptionId);
-      const source = '123';
+      const source = 'ipfs://QmZg8YbrJh92gtya21XQETS72DB7gYjQTQon2Npg4RUtfp';
       const codeLocation = CodeLocation.IPFS;
+
+      append(
+        `Requesting data for Subscription Id: ${String(subscriptionId)}\n`
+      );
+      append(`Public Arguments: ${JSON.stringify({ city: location })}\n`);
+      append(`Private Arguments: ${JSON.stringify({ apiKey })}\n`);
       const publicArgs = await encodeData({ city: location });
-      const privateArgs = await getEncryptedData('apiKey', apiKey);
+      append(`Encoded Public Arguments: ${publicArgs}\n\n`);
+
+      append(`⏳ Encrypting Private Arguments\n`);
+
+      const privateArgs = await getEncryptedData('apiKey', apiKey, source);
+      append(`✅ Encrypted Private Arguments: \n\n${privateArgs}\n\n`);
+      append(`⏳ Sending Request\n`);
 
       const hash = await writeContractAsync({
         abi: consumerAbi,
@@ -74,9 +90,13 @@ export const CreateRequest = ({ append }: BaseProps) => {
         args: [id, source, codeLocation, publicArgs, privateArgs, 30000000],
       });
 
+      append(`✅ Request Sent\nTransaction Hash: ${hash}\n`);
+
       await waitForTransactionReceipt(wagmiConfig, { hash });
       const logs = await getRequestEventLogs({ chainId });
       const dataLogs = await getRequestStartLogs({ chainId });
+      append(`✅ Request Id: ${logs.args.requestId ?? ''}\n\n`);
+      append(`⏳ Waiting for Request Fulfillment\n`);
 
       if (!logs.args.commitment) {
         throw new Error('No commitment found');
@@ -104,12 +124,7 @@ export const CreateRequest = ({ append }: BaseProps) => {
       const publicParams = decodeData(toHex(data.publicArgs))[0] as object;
       const privateParams = decodeData(toHex(data.privateArgs))[0] as object;
 
-      console.log({
-        publicParams,
-        privateParams,
-      });
-
-      const res = await fulfillRequest({
+      await fulfillRequest({
         chainId,
         language: Number(data.language),
         codeLocation: Number(data.codeLocation),
@@ -119,9 +134,13 @@ export const CreateRequest = ({ append }: BaseProps) => {
         commitment,
         requestId: logs.args.commitment.requestId,
       });
-      console.log(res);
+      append(`✅ Request Fulfilled\n\n`);
     } catch (error) {
-      toast.error(errorHandler(error));
+      const e = errorHandler(error);
+      toast.error(e);
+      append(`\n\n❌ Error: ${e}\n\n`);
+    } finally {
+      setIsRequesting(false);
     }
   };
   return (
@@ -161,14 +180,14 @@ export const CreateRequest = ({ append }: BaseProps) => {
         size='primary'
         variant='primary'
         disabled={
-          isPending ||
+          isRequesting ||
           !subscriptionId ||
           !consumerAddress ||
           !address ||
           !apiKey ||
           !location
         }
-        onClick={onAdd}
+        onClick={onRequest}
       >
         Request Data
       </Button>
@@ -184,11 +203,12 @@ export const CreateRequest = ({ append }: BaseProps) => {
             address: consumerAddress as `0x${string}`,
             functionName: 's_lastRequestId',
           });
-          console.log(res);
+          append(`✅ Last Request Id: ${res.toString()}\n`);
         }}
       >
         Get Last Request Id
       </Button>
+
       <Button
         className='h-12 text-base'
         disabled={!consumerAddress}
@@ -200,14 +220,15 @@ export const CreateRequest = ({ append }: BaseProps) => {
             address: consumerAddress as `0x${string}`,
             functionName: 'lastResponse',
           });
-          console.log(res);
+          append(`✅ Last Response: ${res.toString()}\n`);
         }}
       >
         Get Last Response
       </Button>
+
       <Button
         className='h-12 text-base'
-        disabled={isPending || !consumerAddress}
+        disabled={isRequesting || !consumerAddress}
         size='primary'
         variant='primary'
         onClick={async () => {
@@ -218,30 +239,26 @@ export const CreateRequest = ({ append }: BaseProps) => {
             if (!address) {
               throw new Error('No account found');
             }
-            const permission = await getPermission({
-              chainId,
-              address,
-              contractAddress: consumerAddress,
-              signer,
-              provider,
-            });
-
+            const permit = await getPermit(consumerAddress as `0x${string}`);
             const sealedValue = await readContract(wagmiConfig, {
               abi: consumerAbi,
               address: consumerAddress as `0x${string}`,
               functionName: 'getLastResponse',
-              args: [permission],
+              args: [
+                {
+                  publicKey: permit.publicKey as `0x${string}`,
+                  signature: permit.signature as `0x${string}`,
+                },
+              ],
             });
 
-            console.log(sealedValue);
+            const sealingKey = new SealingKey(
+              permit.sealingKey.privateKey,
+              permit.sealingKey.publicKey
+            );
 
-            const unsealed = unsealValue({
-              chainId,
-              contractAddress: consumerAddress,
-              data: sealedValue,
-            });
-
-            console.log(unsealed);
+            const unsealed = sealingKey.unseal(sealedValue);
+            append(`✅ Unsealed Response: ${unsealed.toString()}\n`);
           } catch (error) {
             toast.error(errorHandler(error));
           }
@@ -249,16 +266,6 @@ export const CreateRequest = ({ append }: BaseProps) => {
       >
         Unseal Last Response
       </Button>
-      {/* <Button
-        onClick={() => {
-          const client = createThirdwebClient({
-            clientId: '',
-          });
-          const hash = upload({ client, files: [``] });
-        }}
-      >
-        Upload
-      </Button> */}
     </div>
   );
 };

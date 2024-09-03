@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from 'react';
 
 import { errorHandler } from '~/lib/utils';
+import { wagmiConfig } from '~/lib/viem';
 import { routerAbi } from '~/lib/viem/abi';
 
+import { waitForTransactionReceipt } from '@wagmi/core';
 import { toast } from 'sonner';
 import { hexToNumber } from 'viem';
 import {
@@ -52,7 +54,7 @@ export const CreateSubscription = () => {
         address: router as `0x${string}`,
         functionName: 'createSubscription',
       });
-      console.log(hash);
+      await waitForTransactionReceipt(wagmiConfig, { hash });
     } catch (error) {
       toast.error(errorHandler(error));
     }

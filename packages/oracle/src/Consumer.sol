@@ -83,7 +83,7 @@ contract ConsumerExample is OracleClient, ConfirmedOwner, Permissioned {
         emit Response(requestId, s_lastResponse, s_lastError);
     }
 
-    function getLastResponse(Permission calldata perm) public view onlySender(perm) returns (string memory) {
+    function getLastResponse(Permission calldata perm) public view returns (string memory) {
         return FHE.sealoutput(lastResponse, perm.publicKey);
     }
 }

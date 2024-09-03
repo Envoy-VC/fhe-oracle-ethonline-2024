@@ -1,13 +1,16 @@
 import { decodeAllSync, encodeAsync } from 'cbor';
-import { BrowserProvider, ethers } from 'ethers';
-import { type Provider, type Signer } from 'ethers';
-import { FhenixClient, generatePermit, getPermit } from 'fhenixjs';
+import { ethers } from 'ethers';
+import { FhenixClient } from 'fhenixjs';
 import { createPublicClient, fromBytes, http, toBytes, toHex } from 'viem';
 import { env } from '~/env';
 
 import { fhenixHelium, localFhenix } from './viem/chains';
 
-export const getEncryptedData = async (name: string, value: string) => {
+export const getEncryptedData = async (
+  name: string,
+  value: string,
+  actionIpfsId: string
+) => {
   const data = JSON.stringify({ [name]: value });
 
   const accessControlConditions = [
@@ -16,10 +19,10 @@ export const getEncryptedData = async (name: string, value: string) => {
       standardContractType: '',
       chain: 'ethereum',
       method: '',
-      parameters: [':userAddress'],
+      parameters: [':currentActionIpfsId'],
       returnValueTest: {
         comparator: '=',
-        value: '0xD9153821aF6e910eE43D92f6FD7a610B67D5Df3F',
+        value: actionIpfsId,
       },
     },
   ];
@@ -294,48 +297,4 @@ export const encryptUint256 = async ({
   });
   const encrypted = await fhenixClient.encrypt_uint256(BigInt(data));
   return encrypted;
-};
-
-export const getPermission = async ({
-  chainId,
-  contractAddress,
-  signer,
-}: {
-  chainId: number;
-  address: string;
-  contractAddress: string;
-  signer: Signer;
-  provider: Provider;
-}) => {
-  const provider = new BrowserProvider(window.ethereum);
-  const fhenixClient = new FhenixClient({ provider });
-  const permit = await getPermit(contractAddress, provider);
-  if (!permit) {
-    throw new Error('No permit found');
-  }
-
-  return fhenixClient.extractPermitPermission(permit);
-};
-
-export const unsealValue = ({
-  chainId,
-  contractAddress,
-  data,
-}: {
-  chainId: number;
-  contractAddress: string;
-  data: string;
-}) => {
-  const fhenixProvider = new ethers.JsonRpcProvider(
-    chainId === localFhenix.id
-      ? localFhenix.rpcUrls.default.http[0]
-      : fhenixHelium.rpcUrls.default.http[0]
-  );
-
-  const fhenixClient = new FhenixClient({
-    // @ts-expect-error -- safe types
-    provider: fhenixProvider,
-  });
-  const unsealedValue = fhenixClient.unseal(contractAddress, data);
-  return unsealedValue;
 };

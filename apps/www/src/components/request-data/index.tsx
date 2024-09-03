@@ -2,6 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react';
 
+import { ScrollArea } from '../ui/scroll-area';
 import { CreateRequest } from './create-request';
 
 export const RequestData = () => {
@@ -30,12 +31,12 @@ export const RequestData = () => {
           <CreateRequest append={append} />
         </div>
         <div className='flex w-full basis-2/3 flex-col gap-2'>
-          <div
+          <ScrollArea
             ref={containerRef}
-            className='flex h-full max-w-3xl overflow-x-scroll whitespace-pre rounded-3xl border bg-[#EFF1F5] p-2'
+            className='flex h-[50dvh] max-w-3xl overflow-x-scroll whitespace-pre rounded-3xl border bg-[#EFF1F5] p-2'
           >
             {data}
-          </div>
+          </ScrollArea>
         </div>
       </div>
     </section>

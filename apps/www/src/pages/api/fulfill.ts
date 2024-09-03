@@ -76,27 +76,7 @@ export default async function handler(
     },
   });
 
-  // const litActionCode = body.source;
-
-  const litActionCode = `
-const fetchWeatherApiResponse = async () => {
-  const resp = await Lit.Actions.decryptAndCombine({
-    accessControlConditions,
-    ciphertext,
-    dataToEncryptHash,
-    authSig: null,
-    chain: 'ethereum',
-  });
-
-  const apiKey = JSON.parse(resp).apiKey;
-  const url = 'https://api.weatherapi.com/v1/current.json?key=' + apiKey + '&q=' + city;
-
-  const data = await fetch(url).then((response) => response.json());
-  const temp = String(parseInt(data.current.temp_c));
-  Lit.Actions.setResponse({ response: temp });
-};
-
-fetchWeatherApiResponse();`;
+  const litActionCode = body.source;
 
   const codeLocation =
     Number(body.codeLocation) === 0
@@ -104,8 +84,7 @@ fetchWeatherApiResponse();`;
       : { ipfsId: litActionCode };
 
   const response = await client.executeJs({
-    // ...codeLocation,
-    code: litActionCode,
+    ...codeLocation,
     sessionSigs: sessionSignatures,
     jsParams: {
       ...body.publicArgs,
