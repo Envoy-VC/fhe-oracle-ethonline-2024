@@ -6,3 +6,4 @@ export * from './architecture';
 export * from './faq';
 export * from './create-subscription';
 export * from './request-data';
+export * from './statistics';

@@ -14,6 +14,8 @@ export const env = createEnv({
     NEXT_PUBLIC_FHENIX_HELIUM_ROUTER_ADDRESS: z.string().min(1),
     NEXT_PUBLIC_FHENIX_HELIUM_COORDINATOR_ADDRESS: z.string().min(1),
     NEXT_PUBLIC_FHENIX_HELIUM_CONSUMER_ADDRESS: z.string().min(1),
+    NEXT_PUBLIC_LOCAL_HASURA_GRAPHQL_URL: z.string().min(1),
+    NEXT_PUBLIC_HELIUM_HASURA_GRAPHQL_URL: z.string().min(1),
   },
   experimental__runtimeEnv: {
     NEXT_PUBLIC_WALLETCONNECT_ID: process.env.NEXT_PUBLIC_WALLETCONNECT_ID,
@@ -29,6 +31,10 @@ export const env = createEnv({
       process.env.NEXT_PUBLIC_FHENIX_HELIUM_COORDINATOR_ADDRESS,
     NEXT_PUBLIC_FHENIX_HELIUM_CONSUMER_ADDRESS:
       process.env.NEXT_PUBLIC_FHENIX_HELIUM_CONSUMER_ADDRESS,
+    NEXT_PUBLIC_LOCAL_HASURA_GRAPHQL_URL:
+      process.env.NEXT_PUBLIC_LOCAL_HASURA_GRAPHQL_URL,
+    NEXT_PUBLIC_HELIUM_HASURA_GRAPHQL_URL:
+      process.env.NEXT_PUBLIC_HELIUM_HASURA_GRAPHQL_URL,
   },
   skipValidation: Boolean(process.env.SKIP_ENV_VALIDATION),
   emptyStringAsUndefined: true,
