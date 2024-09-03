@@ -30,7 +30,6 @@
     "test": "hardhat test"
   },
   "dependencies": {
-    "@chainlink/contracts": "^1.2.0",
     "@ensdomains/buffer": "^0.1.1",
     "@fhenixprotocol/contracts": "^0.2.1",
     "@nomicfoundation/hardhat-verify": "^2.0.10",
