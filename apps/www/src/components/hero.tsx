@@ -11,7 +11,7 @@ export const Hero = () => {
   return (
     <section
       className='hero-bg relative my-12 h-[60vh] w-full rounded-[3rem]'
-      id=''
+      id='hero'
     >
       <div className='absolute top-8 flex w-full justify-between px-8'>
         <div className='flex flex-row items-center gap-3 text-xl font-medium text-white'>

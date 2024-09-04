@@ -5,8 +5,6 @@
  * Desktop navbar is better positioned at the bottom
  * Mobile navbar is better positioned at bottom right.
  **/
-import Link from 'next/link';
-
 import { useRef, useState } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -19,6 +17,7 @@ import {
   useSpring,
   useTransform,
 } from 'framer-motion';
+import { useLenis } from 'lenis/react';
 
 import {
   GithubIcon,
@@ -54,6 +53,7 @@ const FloatingDockMobile = ({
   className?: string;
 }) => {
   const [open, setOpen] = useState(false);
+  const lenis = useLenis();
   return (
     <div className={cn('relative block md:hidden', className)}>
       <AnimatePresence>
@@ -79,13 +79,23 @@ const FloatingDockMobile = ({
                   },
                 }}
               >
-                <Link
+                <button
                   key={item.title}
                   className='flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900'
-                  href={item.href}
+                  type='button'
+                  onClick={() => {
+                    if (item.href.startsWith('http')) {
+                      window.open(item.href, '_blank');
+                      return;
+                    }
+                    if (item.href === '#') {
+                      lenis?.scrollTo('');
+                    }
+                    lenis?.scrollTo(item.href);
+                  }}
                 >
                   <div className='h-4 w-4'>{item.icon}</div>
-                </Link>
+                </button>
               </motion.div>
             ))}
           </motion.div>
@@ -182,9 +192,22 @@ const IconContainer = ({
   });
 
   const [hovered, setHovered] = useState(false);
+  const lenis = useLenis();
 
   return (
-    <Link href={href}>
+    <button
+      type='button'
+      onClick={() => {
+        if (href.startsWith('http')) {
+          window.open(href, '_blank');
+          return;
+        }
+        if (href === '#') {
+          lenis?.scrollTo('');
+        }
+        lenis?.scrollTo(href);
+      }}
+    >
       <motion.div
         ref={ref}
         className='relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800'
@@ -211,7 +234,7 @@ const IconContainer = ({
           {icon}
         </motion.div>
       </motion.div>
-    </Link>
+    </button>
   );
 };
 
@@ -222,7 +245,7 @@ export const FloatingDock = () => {
       icon: (
         <HouseIcon className='h-full w-full text-neutral-500 dark:text-neutral-300' />
       ),
-      href: '#',
+      href: '#hero',
     },
 
     {

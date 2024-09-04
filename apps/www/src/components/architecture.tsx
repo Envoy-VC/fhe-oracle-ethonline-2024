@@ -1,14 +1,21 @@
+import Image from 'next/image';
+
 import React from 'react';
+
+import ArchitectureDiagram from 'public/architecture.png';
 
 export const Architecture = () => {
   return (
     <section
-      className='hero-bg flex min-h-[60dvh] w-full flex-col gap-8 rounded-[3rem] p-4 py-12 md:px-12 md:py-12'
+      className='hero-bg flex min-h-[60dvh] w-full flex-col gap-8 rounded-[3rem] p-4 py-4 md:px-12 md:py-12'
       id='architecture'
     >
-      <div className='w-fit rounded-full border border-neutral-700 bg-white px-3 py-1 text-sm text-neutral-800'>
-        Architecture
-      </div>
+      <Image
+        alt='Architecture Diagram'
+        className='w-full max-w-screen-xl !rounded-3xl'
+        src={ArchitectureDiagram}
+        width={1200}
+      />
     </section>
   );
 };
