@@ -14,7 +14,10 @@ export type RequestSentEventResponse = Awaited<
 export const getAllRequests = async ({ chainId }: BaseProps) => {
   const query = `
     query GetAllRequest {
-      OracleCoordinator_RequestSent(order_by: { db_write_timestamp: asc }) {
+      OracleCoordinator_RequestSent(
+        order_by: { db_write_timestamp: asc }
+        where: { db_write_timestamp: { _gt: "2024-09-05T11:47:33.000Z" } }
+      ) {
         id
         requestId
         data
@@ -77,7 +80,10 @@ export type RequestProcessedEventResponse = Awaited<
 export const getAllProcessedRequests = async ({ chainId }: BaseProps) => {
   const query = `
     query GetAllProcessedRequest {
-      OracleRouter_RequestProcessed(order_by: { db_write_timestamp: asc }) {
+      OracleRouter_RequestProcessed(
+        order_by: { db_write_timestamp: asc }
+        where: { db_write_timestamp: { _gt: "2024-09-05T11:47:33.000Z" } }
+      ) {
         id
         requestId
         subscriptionId
