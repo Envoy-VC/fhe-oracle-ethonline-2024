@@ -12,8 +12,10 @@ export default async function handler(
   res: NextApiResponse
 ) {
   const body = req.body as FulfillRequestProps & {
-    encryptedResponse: { data: Uint8Array };
+    encryptedResponse: string;
   };
+
+  const encrypted = Uint8Array.from(Buffer.from(body.encryptedResponse, 'hex'));
 
   const coordinatorAddress =
     body.chainId === localFhenix.id
@@ -31,12 +33,7 @@ export default async function handler(
 
   const report = ethers.AbiCoder.defaultAbiCoder().encode(
     ['bytes32[]', 'bytes[]', 'bytes[]', 'bytes[]'],
-    [
-      [body.requestId],
-      [body.encryptedResponse.data],
-      ['0x00'],
-      [body.commitment],
-    ]
+    [[body.requestId], [encrypted], ['0x00'], [body.commitment]]
   );
 
   const domain = {
@@ -57,7 +54,7 @@ export default async function handler(
 
   const message = {
     requestIds: [body.requestId],
-    results: [body.encryptedResponse.data],
+    results: [encrypted],
     errors: ['0x00'],
     onchainMetadata: [body.commitment],
   };

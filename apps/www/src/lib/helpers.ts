@@ -93,12 +93,14 @@ export const fulfillRequest = async (data: FulfillRequestProps) => {
     data: String(response.response),
   });
 
+  const encryptedHex = Buffer.from(encrypted.data).toString('hex');
+
   const { result } = (await fetch('/api/fulfill', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({ ...data, encryptedResponse: encrypted }),
+    body: JSON.stringify({ ...data, encryptedResponse: encryptedHex }),
   }).then((d) => d.json())) as {
     result: {
       reportHash: string;
