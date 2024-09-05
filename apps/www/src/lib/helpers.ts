@@ -1,8 +1,10 @@
+import type { ExecuteJsResponse } from '@lit-protocol/types';
 import { decodeAllSync, encodeAsync } from 'cbor';
 import { ethers } from 'ethers';
 import { FhenixClient } from 'fhenixjs';
 import { createPublicClient, fromBytes, http, toBytes, toHex } from 'viem';
 import { env } from '~/env';
+import type { FulfillRequestProps } from '~/types';
 
 import { fhenixHelium, localFhenix } from './viem/chains';
 
@@ -73,25 +75,37 @@ export const parseJson = (data: ReturnType<typeof decodeData>, obj: object) => {
   return obj;
 };
 
-interface FulfillRequestProps {
-  chainId: number;
-  language: number;
-  codeLocation: number;
-  source: string;
-  publicArgs: object;
-  privateArgs: object;
-  commitment: string;
-  requestId: string;
-}
-
 export const fulfillRequest = async (data: FulfillRequestProps) => {
-  const { result } = (await fetch('/api/fulfill', {
+  const { response } = (await fetch('/api/execute', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(data),
-  }).then((d) => d.json())) as { result: { response: string } };
+  }).then((d) => d.json())) as { response: ExecuteJsResponse };
+
+  if (!response.success) {
+    throw new Error('Failed to execute request');
+  }
+
+  const encrypted = await encryptUint256({
+    chainId: data.chainId,
+    data: String(response.response),
+  });
+
+  const { result } = (await fetch('/api/fulfill', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ ...data, encryptedResponse: encrypted }),
+  }).then((d) => d.json())) as {
+    result: {
+      reportHash: string;
+      sig: string;
+    };
+  };
+
   return result;
 };
 

@@ -37,3 +37,14 @@ export interface RequestProcessedEvent {
     }[];
   };
 }
+
+export interface FulfillRequestProps {
+  chainId: number;
+  language: number;
+  codeLocation: number;
+  source: string;
+  publicArgs: object;
+  privateArgs: object;
+  commitment: string;
+  requestId: string;
+}

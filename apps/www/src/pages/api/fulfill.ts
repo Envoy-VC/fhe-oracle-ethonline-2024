@@ -1,119 +1,19 @@
 /* eslint-disable import/no-default-export -- safe */
-import { encryptUint256 } from '~/lib/helpers';
 import { coordinatorAbi } from '~/lib/viem/abi';
 import { fhenixHelium, localFhenix } from '~/lib/viem/chains';
 
-import {
-  LitAbility,
-  LitAccessControlConditionResource,
-  LitActionResource,
-  createSiweMessage,
-  generateAuthSig,
-} from '@lit-protocol/auth-helpers';
-import { LIT_RPC, LitNetwork } from '@lit-protocol/constants';
-import { LitNodeClientNodeJs } from '@lit-protocol/lit-node-client-nodejs';
 import { TypedDataEncoder, ethers } from 'ethers';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { env } from '~/env';
+import type { FulfillRequestProps } from '~/types';
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const body = req.body as {
-    chainId: number;
-    language: number;
-    codeLocation: number;
-    source: string;
-    publicArgs: object;
-    privateArgs: object;
-    commitment: `0x${string}`;
-    requestId: `0x${string}`;
+  const body = req.body as FulfillRequestProps & {
+    encryptedResponse: { data: Uint8Array };
   };
-
-  const provider = new ethers.JsonRpcProvider(LIT_RPC.CHRONICLE_YELLOWSTONE);
-
-  const wallet = new ethers.Wallet(env.PRIVATE_KEY, provider);
-
-  const client = new LitNodeClientNodeJs({
-    alertWhenUnauthorized: false,
-    litNetwork: LitNetwork.DatilDev,
-  });
-
-  await client.connect();
-
-  const sessionSignatures = await client.getSessionSigs({
-    chain: 'ethereum',
-    expiration: new Date(Date.now() + 1000 * 60 * 10).toISOString(), // 10 minutes
-    resourceAbilityRequests: [
-      {
-        resource: new LitAccessControlConditionResource('*'),
-        ability: LitAbility.AccessControlConditionDecryption,
-      },
-      {
-        resource: new LitActionResource('*'),
-        ability: LitAbility.LitActionExecution,
-      },
-    ],
-    authNeededCallback: async ({
-      uri,
-      expiration,
-      resourceAbilityRequests,
-    }) => {
-      const toSign = await createSiweMessage({
-        uri,
-        expiration,
-        resources: resourceAbilityRequests,
-        walletAddress: wallet.address,
-        nonce: await client.getLatestBlockhash(),
-        litNodeClient: client,
-      });
-
-      return await generateAuthSig({
-        signer: wallet,
-        toSign,
-      });
-    },
-  });
-
-  // const litActionCode = body.source;
-
-  // const codeLocation =
-  //   Number(body.codeLocation) === 0
-  //     ? { code: litActionCode }
-  //     : { ipfsId: litActionCode };
-
-  const response = await client.executeJs({
-    // ...codeLocation,
-    code: `const fetchWeatherApiResponse = async () => {
-  const resp = await Lit.Actions.decryptAndCombine({
-    accessControlConditions,
-    ciphertext,
-    dataToEncryptHash,
-    authSig: null,
-    chain: 'ethereum',
-  });
-
-  const apiKey = JSON.parse(resp).apiKey;
-  const url = 'https://api.weatherapi.com/v1/current.json?key=' + apiKey + '&q=' + city;
-
-  const data = await fetch(url).then((response) => response.json());
-  const temp = String(parseInt(data.current.temp_c));
-  Lit.Actions.setResponse({ response: temp });
-};
-
-fetchWeatherApiResponse();`,
-    sessionSigs: sessionSignatures,
-    jsParams: {
-      ...body.publicArgs,
-      ...body.privateArgs,
-    },
-  });
-
-  const encrypted = await encryptUint256({
-    chainId: body.chainId,
-    data: response.response as string,
-  });
 
   const coordinatorAddress =
     body.chainId === localFhenix.id
@@ -131,7 +31,12 @@ fetchWeatherApiResponse();`,
 
   const report = ethers.AbiCoder.defaultAbiCoder().encode(
     ['bytes32[]', 'bytes[]', 'bytes[]', 'bytes[]'],
-    [[body.requestId], [encrypted.data], ['0x00'], [body.commitment]]
+    [
+      [body.requestId],
+      [body.encryptedResponse.data],
+      ['0x00'],
+      [body.commitment],
+    ]
   );
 
   const domain = {
@@ -152,7 +57,7 @@ fetchWeatherApiResponse();`,
 
   const message = {
     requestIds: [body.requestId],
-    results: [encrypted.data],
+    results: [body.encryptedResponse.data],
     errors: ['0x00'],
     onchainMetadata: [body.commitment],
   };
@@ -172,7 +77,6 @@ fetchWeatherApiResponse();`,
 
   res.status(200).json({
     result: {
-      response: response.response,
       reportHash,
       sig,
     },
